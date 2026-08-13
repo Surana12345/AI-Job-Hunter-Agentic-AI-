@@ -95,18 +95,27 @@ JWT_SECRET_KEY=dev-secret-key-change-in-production
 
 ## 💻 Running the Application
 
-### Start Backend API Server
-```bash
-python -m uvicorn backend.main:app --host 127.0.0.1 --port 8000 --reload
+### Option A: Local Development Launchers
+Run both Backend and Frontend concurrently using the automated script:
+```powershell
+.\start_app.ps1
 ```
-- Interactive Swagger Docs: `http://127.0.0.1:8000/docs`
-- ReDoc Docs: `http://127.0.0.1:8000/redoc`
-
-### Start Streamlit Frontend Dashboard
+Or run separately:
 ```bash
+# Terminal 1: Backend FastAPI
+python -m uvicorn backend.main:app --host 127.0.0.1 --port 8000 --reload
+
+# Terminal 2: Streamlit Dashboard
 streamlit run frontend/app.py
 ```
-- Open `http://localhost:8501` in your browser.
+
+### Option B: Docker Containerized Deployment
+```bash
+# Build and run with Docker Compose
+docker-compose up --build -d
+```
+- FastAPI Server: `http://localhost:8000`
+- Streamlit Dashboard: `http://localhost:8501`
 
 ---
 
