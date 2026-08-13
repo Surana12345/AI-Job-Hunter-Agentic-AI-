@@ -1,0 +1,30 @@
+# Python / Virtual Environment
+venv/
+.venv/
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Application Data & Local Database
+data/
+*.db
+*.sqlite
+*.sqlite3
+
+# Environment Variables
+.env
+
+# Vectorstore Local Persistence
+chroma_db/
+
+# Pytest / Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE / OS Files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
