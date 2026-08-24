@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Job Hunter | Next-Gen Agentic AI Career Assistant</title>
-  <meta name="description" content="Autonomous Multi-Agent AI Platform for Job Discovery, ATS Resume Optimization, Company Intelligence, Mock Interviews & Salary Negotiation.">
+  <title>CareerOps | Agentic AI Job Search & Application Automation Platform</title>
+  <meta name="description" content="Autonomous career-operations platform for job discovery, weighted hybrid matching, application automation, cold outreach, and outcome feedback analytics.">
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,8 +16,6 @@
 
   <!-- Three.js & GSAP -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
 
   <style>
     :root {
@@ -32,605 +30,101 @@
       --text-muted: #94A3B8;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      scroll-behavior: smooth;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; scroll-behavior: smooth; }
+    body { background-color: var(--bg-primary); color: var(--text-main); font-family: 'Inter', sans-serif; overflow-x: hidden; }
+    h1, h2, h3, h4 { font-family: 'Outfit', sans-serif; }
 
-    body {
-      background-color: var(--bg-primary);
-      color: var(--text-main);
-      font-family: 'Inter', sans-serif;
-      overflow-x: hidden;
-      line-height: 1.6;
-    }
+    #webgl-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; }
 
-    h1, h2, h3, h4, .brand-font {
-      font-family: 'Outfit', sans-serif;
-    }
-
-    /* 3D Canvas Background */
-    #webgl-canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: -1;
-      pointer-events: none;
-    }
-
-    /* Navigation Bar */
     nav {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      padding: 1.2rem 4rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      z-index: 100;
-      background: rgba(7, 9, 19, 0.7);
-      backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--bg-card-border);
+      position: fixed; top: 0; left: 0; width: 100%; padding: 1.2rem 4rem; display: flex;
+      justify-content: space-between; align-items: center; z-index: 100; background: rgba(7, 9, 19, 0.7);
+      backdrop-filter: blur(16px); border-bottom: 1px solid var(--bg-card-border);
     }
 
     .logo {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      font-size: 1.5rem;
-      font-weight: 800;
-      background: linear-gradient(135deg, #8B5CF6, #06B6D4);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+      display: flex; align-items: center; gap: 0.8rem; font-size: 1.6rem; font-weight: 800;
+      background: linear-gradient(135deg, #8B5CF6, #06B6D4); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     }
-
-    .logo i {
-      color: var(--accent-indigo);
-      -webkit-text-fill-color: initial;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 2rem;
-      list-style: none;
-    }
-
-    .nav-links a {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-weight: 500;
-      transition: color 0.3s;
-    }
-
-    .nav-links a:hover {
-      color: var(--text-main);
-    }
+    .logo i { color: var(--accent-indigo); -webkit-text-fill-color: initial; }
 
     .cta-btn {
-      background: linear-gradient(135deg, var(--accent-indigo), var(--accent-purple));
-      color: white;
-      padding: 0.7rem 1.6rem;
-      border-radius: 50px;
-      font-weight: 600;
-      text-decoration: none;
-      box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
-      transition: all 0.3s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.6rem;
+      background: linear-gradient(135deg, var(--accent-indigo), var(--accent-purple)); color: white;
+      padding: 0.7rem 1.6rem; border-radius: 50px; font-weight: 600; text-decoration: none;
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.4); transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.6rem;
     }
 
-    .cta-btn:hover {
-      transform: translateY(-2px) scale(1.03);
-      box-shadow: 0 0 30px rgba(139, 92, 246, 0.6);
-    }
+    .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 8rem 2rem 4rem; }
+    .hero-title { font-size: clamp(2.8rem, 6vw, 4.8rem); font-weight: 900; line-height: 1.1; max-width: 900px; margin-bottom: 1.5rem; }
+    .gradient-text { background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple), var(--accent-pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-    /* Hero Section */
-    .hero {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 8rem 2rem 4rem;
-      position: relative;
-    }
+    .grid-3d { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; max-width: 1200px; margin: 4rem auto; padding: 0 2rem; }
+    .tilt-card { background: var(--bg-card); border: 1px solid var(--bg-card-border); border-radius: 24px; padding: 2rem; backdrop-filter: blur(16px); }
 
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: rgba(99, 102, 241, 0.15);
-      border: 1px solid rgba(99, 102, 241, 0.4);
-      color: #A5B4FC;
-      padding: 0.4rem 1.2rem;
-      border-radius: 50px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      margin-bottom: 1.5rem;
-      backdrop-filter: blur(10px);
-    }
-
-    .hero-title {
-      font-size: clamp(2.8rem, 6vw, 4.8rem);
-      font-weight: 900;
-      line-height: 1.1;
-      max-width: 900px;
-      margin-bottom: 1.5rem;
-      background: linear-gradient(180deg, #FFFFFF 0%, #94A3B8 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .gradient-text {
-      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple), var(--accent-pink));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .hero-subtitle {
-      font-size: 1.25rem;
-      color: var(--text-muted);
-      max-width: 680px;
-      margin-bottom: 2.5rem;
-      font-weight: 400;
-    }
-
-    .hero-actions {
-      display: flex;
-      gap: 1.2rem;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--bg-card-border);
-      color: var(--text-main);
-      padding: 0.7rem 1.6rem;
-      border-radius: 50px;
-      font-weight: 600;
-      text-decoration: none;
-      backdrop-filter: blur(10px);
-      transition: all 0.3s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.6rem;
-    }
-
-    .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.12);
-      transform: translateY(-2px);
-    }
-
-    /* Floating Stats Bar */
-    .stats-bar {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1.5rem;
-      max-width: 1000px;
-      width: 100%;
-      margin: 4rem auto 0;
-    }
-
-    .stat-card {
-      background: var(--bg-card);
-      border: 1px solid var(--bg-card-border);
-      padding: 1.5rem;
-      border-radius: 16px;
-      backdrop-filter: blur(12px);
-      text-align: center;
-      transition: transform 0.3s, border-color 0.3s;
-    }
-
-    .stat-card:hover {
-      border-color: rgba(99, 102, 241, 0.4);
-      transform: translateY(-4px);
-    }
-
-    .stat-num {
-      font-size: 2.2rem;
-      font-weight: 800;
-      color: var(--accent-cyan);
-    }
-
-    .stat-lbl {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-    }
-
-    /* Section Styling */
-    section {
-      padding: 6rem 2rem;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .section-header {
-      text-align: center;
-      margin-bottom: 4rem;
-    }
-
-    .section-title {
-      font-size: 2.5rem;
-      font-weight: 800;
-      margin-bottom: 1rem;
-    }
-
-    .section-sub {
-      color: var(--text-muted);
-      font-size: 1.1rem;
-      max-width: 600px;
-      margin: 0 auto;
-    }
-
-    /* 3D Tilt Cards Grid */
-    .grid-3d {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 2rem;
-    }
-
-    .tilt-card {
-      background: var(--bg-card);
-      border: 1px solid var(--bg-card-border);
-      border-radius: 24px;
-      padding: 2rem;
-      backdrop-filter: blur(16px);
-      transform-style: preserve-3d;
-      perspective: 1000px;
-      transition: border-color 0.4s, box-shadow 0.4s;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .tilt-card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(99, 102, 241, 0.12), transparent 40%);
-      pointer-events: none;
-    }
-
-    .tilt-card:hover {
-      border-color: rgba(139, 92, 246, 0.5);
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 25px rgba(139, 92, 246, 0.2);
-    }
-
-    .icon-box {
-      width: 56px;
-      height: 56px;
-      border-radius: 16px;
-      background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(236, 72, 153, 0.2));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      color: var(--accent-cyan);
-      margin-bottom: 1.5rem;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .tilt-card h3 {
-      font-size: 1.35rem;
-      font-weight: 700;
-      margin-bottom: 0.8rem;
-    }
-
-    .tilt-card p {
-      color: var(--text-muted);
-      font-size: 0.95rem;
-      line-height: 1.6;
-    }
-
-    /* Architecture Flow Interactive */
-    .flow-container {
-      background: var(--bg-card);
-      border: 1px solid var(--bg-card-border);
-      border-radius: 24px;
-      padding: 3rem 2rem;
-      backdrop-filter: blur(16px);
-      text-align: center;
-    }
-
-    .flow-nodes {
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 2rem;
-      margin-top: 2rem;
-    }
-
-    .flow-step {
-      background: rgba(30, 41, 59, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 1.5rem 2rem;
-      border-radius: 16px;
-      min-width: 200px;
-      transition: all 0.3s ease;
-    }
-
-    .flow-step:hover {
-      border-color: var(--accent-indigo);
-      transform: scale(1.05);
-    }
-
-    .flow-arrow {
-      font-size: 1.5rem;
-      color: var(--accent-purple);
-    }
-
-    /* Live API Explorer */
-    .api-preview {
-      background: #0B0E17;
-      border: 1px solid var(--bg-card-border);
-      border-radius: 20px;
-      overflow: hidden;
-      font-family: 'Courier New', monospace;
-    }
-
-    .api-header {
-      background: #161C2E;
-      padding: 0.8rem 1.2rem;
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-    }
-
-    .dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-    }
-
-    .api-body {
-      padding: 1.5rem;
-      color: #A5B4FC;
-      font-size: 0.95rem;
-      line-height: 1.7;
-      overflow-x: auto;
-    }
-
-    /* Footer */
-    footer {
-      border-top: 1px solid var(--bg-card-border);
-      padding: 4rem 2rem 2rem;
-      text-align: center;
-      background: rgba(7, 9, 19, 0.9);
-    }
-
-    .footer-links {
-      display: flex;
-      justify-content: center;
-      gap: 2rem;
-      margin: 2rem 0;
-    }
-
-    .footer-links a {
-      color: var(--text-muted);
-      text-decoration: none;
-      transition: color 0.3s;
-    }
-
-    .footer-links a:hover {
-      color: var(--accent-cyan);
-    }
+    footer { border-top: 1px solid var(--bg-card-border); padding: 3rem; text-align: center; background: rgba(7, 9, 19, 0.9); }
   </style>
 </head>
 <body>
 
-  <!-- Three.js 3D Particle Canvas -->
   <canvas id="webgl-canvas"></canvas>
 
-  <!-- Navigation -->
   <nav>
-    <div class="logo">
-      <i class="fa-solid fa-brain"></i> AI Job Hunter
-    </div>
-    <ul class="nav-links">
-      <li><a href="#agents">Agent Suite</a></li>
-      <li><a href="#architecture">Architecture</a></li>
-      <li><a href="#api">API Explorer</a></li>
-      <li><a href="http://localhost:8501" target="_blank">Streamlit App</a></li>
-      <li><a href="http://127.0.0.1:8000/docs" target="_blank">FastAPI Docs</a></li>
-    </ul>
-    <a href="https://github.com/Surana12345/AI-Job-Hunter-Agentic-AI-.git" target="_blank" class="cta-btn">
-      <i class="fa-brands fa-github"></i> View GitHub Repo
-    </a>
+    <div class="logo"><i class="fa-solid fa-compass-drafting"></i> CareerOps</div>
+    <a href="http://127.0.0.1:8000/" class="cta-btn"><i class="fa-solid fa-rocket"></i> Launch CareerOps Portal</a>
   </nav>
 
-  <!-- Hero Section -->
   <header class="hero">
-    <div class="badge">
-      <i class="fa-solid fa-sparkles"></i> Autonomous Multi-Agent Career Platform
+    <div style="background:rgba(99,102,241,0.15); border:1px solid rgba(99,102,241,0.4); color:#A5B4FC; padding:0.4rem 1.2rem; border-radius:50px; font-size:0.85rem; font-weight:600; margin-bottom:1.5rem;">
+      <i class="fa-solid fa-sparkles"></i> Agentic AI Career Operating System
     </div>
 
     <h1 class="hero-title">
-      Autonomous <span class="gradient-text">Agentic AI</span> Assistant for Career Discovery & Prep
+      Autonomous <span class="gradient-text">CareerOps</span> Application Platform
     </h1>
 
-    <p class="hero-subtitle">
-      Powered by LangGraph, Gemini 2.5 Flash, ChromaDB, FastAPI & Streamlit. 
-      Automates job discovery, ATS scoring, company intelligence, mock interview coaching, and salary negotiation.
+    <p style="color:var(--text-muted); font-size:1.2rem; max-width:680px; margin-bottom:2.5rem;">
+      Discovers relevant jobs, calculates weighted hybrid match scores, automates application preparation, 
+      sends personalized recruiter outreach, and continuously learns from application outcomes.
     </p>
 
-    <div class="hero-actions">
-      <a href="http://localhost:8501" target="_blank" class="cta-btn">
-        <i class="fa-solid fa-rocket"></i> Launch Streamlit Dashboard
-      </a>
-      <a href="http://127.0.0.1:8000/docs" target="_blank" class="btn-secondary">
-        <i class="fa-solid fa-code"></i> Explore OpenAPI (38 Endpoints)
-      </a>
-    </div>
-
-    <!-- Live Stats -->
-    <div class="stats-bar">
-      <div class="stat-card">
-        <div class="stat-num">10+</div>
-        <div class="stat-lbl">Autonomous Agents</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-num">38</div>
-        <div class="stat-lbl">FastAPI Endpoints</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-num">9</div>
-        <div class="stat-lbl">Streamlit Modules</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-num">0%</div>
-        <div class="stat-lbl">Impersonation (User-Controlled)</div>
-      </div>
+    <div style="display:flex; gap:1.2rem;">
+      <a href="http://127.0.0.1:8000/" class="cta-btn"><i class="fa-solid fa-right-to-bracket"></i> Launch Platform</a>
+      <a href="http://127.0.0.1:8000/docs" class="cta-btn" style="background:rgba(255,255,255,0.08);"><i class="fa-solid fa-code"></i> OpenAPI Specs</a>
     </div>
   </header>
 
-  <!-- 3D Agent Suite Grid -->
-  <section id="agents">
-    <div class="section-header">
-      <h2 class="section-title">Autonomous <span class="gradient-text">Agent Suite</span></h2>
-      <p class="section-sub">10 Specialized AI Agents Orchestrated via LangGraph State Machine</p>
+  <div class="grid-3d">
+    <div class="tilt-card">
+      <h3>👤 Profile Agent Memory</h3>
+      <p>Canonical candidate profile extraction into structured JSON separating facts from AI generation.</p>
     </div>
-
-    <div class="grid-3d">
-      <div class="tilt-card">
-        <div class="icon-box"><i class="fa-solid fa-file-invoice"></i></div>
-        <h3>Resume Intelligence</h3>
-        <p>PDF/DOCX text extraction, AI skill parsing, and candidate vector embedding in ChromaDB.</p>
-      </div>
-
-      <div class="tilt-card">
-        <div class="icon-box"><i class="fa-solid fa-bullseye"></i></div>
-        <h3>ATS Match & Tailor</h3>
-        <p>Calculates match %, keyword gap breakdown, and rewrites resumes for target jobs.</p>
-      </div>
-
-      <div class="tilt-card">
-        <div class="icon-box"><i class="fa-solid fa-magnifying-glass"></i></div>
-        <h3>Multi-Board Job Search</h3>
-        <p>Aggregates job listings across Remotive & Adzuna with deduplication and 1-click tracking.</p>
-      </div>
-
-      <div class="tilt-card">
-        <div class="icon-box"><i class="fa-solid fa-building"></i></div>
-        <h3>Company Intelligence</h3>
-        <p>Researches corporate mission, tech stack, products, values, and interview strategies.</p>
-      </div>
-
-      <div class="tilt-card">
-        <div class="icon-box"><i class="fa-solid fa-feather"></i></div>
-        <h3>Career Assets Generator</h3>
-        <p>Drafts tailored Cover Letters, LinkedIn cold outreach messages, and Interview prep guides.</p>
-      </div>
-
-      <div class="tilt-card">
-        <div class="icon-box"><i class="fa-solid fa-file-pdf"></i></div>
-        <h3>PDF Dossier Exporter</h3>
-        <p>Compiles cover letter, resume, and interview guides into a formatted ReportLab PDF dossier.</p>
-      </div>
-
-      <div class="tilt-card">
-        <div class="icon-box"><i class="fa-solid fa-microphone"></i></div>
-        <h3>Mock Interview Simulator</h3>
-        <p>Real-time conversational interview practice with 1-10 scoring, STAR feedback, and next questions.</p>
-      </div>
-
-      <div class="tilt-card">
-        <div class="icon-box"><i class="fa-solid fa-handshake"></i></div>
-        <h3>Salary Negotiator</h3>
-        <p>Evaluates base, bonus, equity vs 25th/50th/75th market percentiles & drafts counter-offer scripts.</p>
-      </div>
+    <div class="tilt-card">
+      <h3>🎯 Weighted Hybrid Matching</h3>
+      <p>30% Skills, 20% Experience, 15% Role, 10% Location, 10% Salary, 10% Education, 5% Freshness.</p>
     </div>
-  </section>
-
-  <!-- Architecture Flow -->
-  <section id="architecture">
-    <div class="section-header">
-      <h2 class="section-title">LangGraph <span class="gradient-text">Orchestration Flow</span></h2>
-      <p class="section-sub">State Machine Supervisor Pattern for Deterministic Execution</p>
+    <div class="tilt-card">
+      <h3>🤖 Application Agent</h3>
+      <p>Form auto-mapping & automation policy routing (FULL_AUTO, ASSISTED, MANUAL).</p>
     </div>
-
-    <div class="flow-container">
-      <div class="flow-nodes">
-        <div class="flow-step">
-          <i class="fa-solid fa-user-astronaut flow-arrow"></i>
-          <h4>User Request</h4>
-          <p>Streamlit / API</p>
-        </div>
-        <div class="flow-arrow"><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="flow-step">
-          <i class="fa-solid fa-diagram-project flow-arrow"></i>
-          <h4>LangGraph State</h4>
-          <p>Intent Routing</p>
-        </div>
-        <div class="flow-arrow"><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="flow-step">
-          <i class="fa-solid fa-microchip flow-arrow"></i>
-          <h4>Gemini 2.5 Node</h4>
-          <p>Autonomous Agent</p>
-        </div>
-        <div class="flow-arrow"><i class="fa-solid fa-chevron-right"></i></div>
-        <div class="flow-step">
-          <i class="fa-solid fa-database flow-arrow"></i>
-          <h4>ChromaDB / SQLite</h4>
-          <p>Persistent Output</p>
-        </div>
-      </div>
+    <div class="tilt-card">
+      <h3>✉️ Outreach Agent</h3>
+      <p>Personalized recruiter cold outreach email generation & interaction tracking.</p>
     </div>
-  </section>
-
-  <!-- API Explorer -->
-  <section id="api">
-    <div class="section-header">
-      <h2 class="section-title">FastAPI <span class="gradient-text">REST API</span></h2>
-      <p class="section-sub">38 Active Registered Endpoints with Async Performance</p>
+    <div class="tilt-card">
+      <h3>💡 Skill-Gap Intelligence</h3>
+      <p>Outcome feedback loop identifying missing skills and optimizing search strategy.</p>
     </div>
-
-    <div class="api-preview">
-      <div class="api-header">
-        <div class="dot" style="background:#EF4444"></div>
-        <div class="dot" style="background:#F59E0B"></div>
-        <div class="dot" style="background:#10B981"></div>
-        <span style="color:var(--text-muted); font-size:0.85rem; margin-left:1rem;">bash - curl api test</span>
-      </div>
-      <div class="api-body">
-        curl -X POST "http://127.0.0.1:8000/api/v1/assets/mock-interview/evaluate" \<br>
-        &nbsp;&nbsp;-H "Authorization: Bearer YOUR_JWT_TOKEN" \<br>
-        &nbsp;&nbsp;-H "Content-Type: application/json" \<br>
-        &nbsp;&nbsp;-d '{<br>
-        &nbsp;&nbsp;&nbsp;&nbsp;"job_title": "Senior AI Engineer",<br>
-        &nbsp;&nbsp;&nbsp;&nbsp;"company_name": "Google",<br>
-        &nbsp;&nbsp;&nbsp;&nbsp;"question": "How do you design scalable agent state machines?",<br>
-        &nbsp;&nbsp;&nbsp;&nbsp;"candidate_answer": "Using LangGraph StateGraph with conditional entry points..."<br>
-        &nbsp;&nbsp;}'
-      </div>
+    <div class="tilt-card">
+      <h3>🛡️ DevSecOps Security</h3>
+      <p>FastAPI backend, JWT auth, bcrypt password hashing, structured trajectory audit logs.</p>
     </div>
-  </section>
+  </div>
 
-  <!-- Footer -->
   <footer>
-    <div class="logo" style="justify-content: center;">
-      <i class="fa-solid fa-brain"></i> AI Job Hunter Platform
-    </div>
-    <p style="color:var(--text-muted); margin-top:0.5rem;">Empowering candidates with autonomous multi-agent career intelligence.</p>
-    <div class="footer-links">
-      <a href="https://github.com/Surana12345/AI-Job-Hunter-Agentic-AI-.git" target="_blank">GitHub Repository</a>
-      <a href="http://localhost:8501" target="_blank">Streamlit Dashboard</a>
-      <a href="http://127.0.0.1:8000/docs" target="_blank">OpenAPI Specs</a>
-    </div>
-    <p style="color:var(--text-muted); font-size:0.85rem;">Built with LangGraph • Gemini 2.5 • ChromaDB • FastAPI • Streamlit • Three.js</p>
+    <div class="logo" style="justify-content:center;"><i class="fa-solid fa-compass-drafting"></i> CareerOps Platform</div>
+    <p style="color:var(--text-muted); margin-top:0.8rem;">CareerOps — Agentic AI Job Search & Application Automation Platform</p>
   </footer>
 
-  <!-- Three.js 3D Background Script -->
   <script>
     const canvas = document.getElementById('webgl-canvas');
     const scene = new THREE.Scene();
@@ -638,122 +132,27 @@
     const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
 
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-    // Particle Stars Field
-    const particlesCount = 800;
+    const particlesCount = 600;
     const posArray = new Float32Array(particlesCount * 3);
-
     for (let i = 0; i < particlesCount * 3; i++) {
       posArray[i] = (Math.random() - 0.5) * 15;
     }
 
-    const particlesGeometry = new THREE.BufferGeometry();
-    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-
-    const particlesMaterial = new THREE.PointsMaterial({
-      size: 0.025,
-      color: 0x8B5CF6,
-      transparent: true,
-      opacity: 0.6
-    });
-
-    const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
-    scene.add(particlesMesh);
-
-    // Floating 3D Geometric Polyhedra
-    const geo = new THREE.IcosahedronGeometry(1.4, 0);
-    const mat = new THREE.MeshStandardMaterial({
-      color: 0x6366F1,
-      wireframe: true,
-      transparent: true,
-      opacity: 0.25
-    });
-    const shape = new THREE.Mesh(geo, mat);
-    shape.position.set(3, 0, -2);
-    scene.add(shape);
-
-    const geo2 = new THREE.TorusGeometry(1, 0.3, 16, 100);
-    const mat2 = new THREE.MeshStandardMaterial({
-      color: 0x06B6D4,
-      wireframe: true,
-      transparent: true,
-      opacity: 0.2
-    });
-    const shape2 = new THREE.Mesh(geo2, mat2);
-    shape2.position.set(-3.5, -1, -3);
-    scene.add(shape2);
-
-    // Lighting
-    const pointLight = new THREE.PointLight(0x8B5CF6, 2);
-    pointLight.position.set(5, 5, 5);
-    scene.add(pointLight);
-
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-    scene.add(ambientLight);
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+    const mat = new THREE.PointsMaterial({ size: 0.025, color: 0x8B5CF6 });
+    const mesh = new THREE.Points(geo, mat);
+    scene.add(mesh);
 
     camera.position.z = 5;
 
-    // Mouse Parallax Effect
-    let mouseX = 0;
-    let mouseY = 0;
-
-    window.addEventListener('mousemove', (e) => {
-      mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
-      mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
-    });
-
-    // Scroll Parallax Effect
-    let scrollY = 0;
-    window.addEventListener('scroll', () => {
-      scrollY = window.scrollY;
-    });
-
-    // Animation Loop
     function animate() {
       requestAnimationFrame(animate);
-
-      particlesMesh.rotation.y = mouseX * 0.1 + scrollY * 0.0003;
-      particlesMesh.rotation.x = -mouseY * 0.1;
-
-      shape.rotation.x += 0.005;
-      shape.rotation.y += 0.005;
-      shape.position.y = Math.sin(Date.now() * 0.001) * 0.3 - scrollY * 0.001;
-
-      shape2.rotation.x += 0.003;
-      shape2.rotation.y += 0.007;
-
+      mesh.rotation.y += 0.002;
       renderer.render(scene, camera);
     }
     animate();
-
-    // Window Resize
-    window.addEventListener('resize', () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    });
-
-    // 3D Card Hover Glow Effect
-    document.querySelectorAll('.tilt-card').forEach(card => {
-      card.addEventListener('mousemove', (e) => {
-        const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-        card.style.setProperty('--mouse-x', `${x}px`);
-        card.style.setProperty('--mouse-y', `${y}px`);
-
-        const centerX = rect.width / 2;
-        const centerY = rect.height / 2;
-        const rotateX = (y - centerY) / 12;
-        const rotateY = (centerX - x) / 12;
-        card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
-      });
-
-      card.addEventListener('mouseleave', () => {
-        card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)';
-      });
-    });
   </script>
 </body>
 </html>

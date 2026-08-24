@@ -94,12 +94,14 @@ def create_app() -> FastAPI:
 
     # --- Routers ---
     from backend.auth.router import router as auth_router
+    from backend.profile.router import router as profile_router
     from backend.resume.router import router as resume_router
     from backend.jobs.router import router as jobs_router
     from backend.assets.router import router as assets_router
     from backend.tracker.router import router as tracker_router
 
     app.include_router(auth_router, prefix="/api/v1")
+    app.include_router(profile_router, prefix="/api/v1")
     app.include_router(resume_router, prefix="/api/v1")
     app.include_router(jobs_router, prefix="/api/v1")
     app.include_router(assets_router, prefix="/api/v1")

@@ -1,120 +1,78 @@
-# 🎯 AI Job Hunter -- Agentic AI Career Assistant
+# 🎯 CareerOps — Agentic AI Job Search & Application Automation Platform
 
-An autonomous multi-agent platform powered by **LangGraph**, **Gemini 2.5 Flash**, **ChromaDB**, **FastAPI**, and **Streamlit**. 
+An autonomous multi-agent career-operations platform built strictly according to the **CareerOps Product Blueprint & Architecture**.
 
-**Important Constraint:** Designed strictly to empower candidates — it **never automatically submits applications or impersonates you on job platforms**. It prepares personalized, ATS-optimized application packages for your review.
-
----
-
-## 🌟 Architecture & Vision
-
-```
-                      +----------------------------------+
-                      |   Streamlit Multi-Page Frontend  |
-                      |          (9 Interactive Pages)   |
-                      +----------------------------------+
-                                       |
-                                       v
-                      +----------------------------------+
-                      |     FastAPI Async REST API       |
-                      |      (38 Active Endpoints)       |
-                      +----------------------------------+
-                                       |
-                                       v
-                  +------------------------------------------+
-                  |  LangGraph Multi-Agent Orchestrator     |
-                  +------------------------------------------+
-                    /          |           |            \
-                   v           v           v             v
-             Resume Agent   ATS Agent  Tailor Agent   Company Agent
-             Cover Letter  Outreach    Mock Interview Negotiator
-                   \           |           |            /
-                    +----------+-----------+-----------+
-                                       |
-                                       v
-                     +-----------------------------------+
-                     | ChromaDB Vectorstore + Embeddings |
-                     +-----------------------------------+
-```
-
-### Key Highlights
-- **🤖 Multi-Agent Orchestration**: State machine pipeline built on **LangGraph** routing tasks dynamically between 10 specialized agent nodes.
-- **📄 Resume Intelligence**: Extracts text from PDF/DOCX files, parses structured JSON skills, and stores vector embeddings in **ChromaDB**.
-- **🎯 ATS Match & Keyword Gap**: Calculates keyword overlap, match percentage, and missing skills vs job descriptions.
-- **🔍 Multi-Source Job Discovery**: Searches technical roles across Remotive and Adzuna APIs with instant bookmarking.
-- **✨ Career Assets Generator**: AI-generated tailored Cover Letters, LinkedIn/Email outreach messages, and Technical/Behavioral Interview Prep Guides.
-- **📊 Application Pipeline Tracker**: Kanban/Table dashboard tracking application stages (`saved`, `applied`, `interview`, `offer`, `rejected`) and conversion analytics.
-- **📦 Application Package Exporter (PDF)**: Formats and exports compiled PDF application dossiers containing cover letters, resume overviews, outreach strategies, and interview guides.
-- **🎙️ AI Mock Interview Simulator**: Real-time interactive mock interview evaluation with 1-10 scoring, STAR feedback, model answers, and follow-up questions.
-- **💰 Salary Negotiation & Offer Evaluator**: Offer evaluation, market benchmarks (25th/50th/75th percentile), counter-offer email generator, and negotiation tactics.
+Discovers relevant jobs, calculates weighted hybrid match scores, personalizes applications, maps form fields, sends personalized recruiter outreach, tracks application outcomes, and continuously learns from application results.
 
 ---
 
-## 🛠️ Technology Stack
+## 🌟 Master Architecture Overview
 
-| Layer | Technology |
-|-------|------------|
-| **Agent Orchestration** | LangGraph, LangChain |
-| **LLM Intelligence** | Google Gemini (`gemini-2.5-flash`) |
-| **Vector DB & Embeddings** | ChromaDB, Sentence-Transformers (`all-MiniLM-L6-v2`) |
-| **Backend Framework** | FastAPI, Uvicorn, Async SQLAlchemy, SQLite |
-| **Document & PDF Export** | PyPDF2, python-docx, ReportLab |
-| **Security & Auth** | JWT (JSON Web Tokens), Direct Bcrypt Password Hashing |
-| **Frontend UI** | Streamlit (Multi-page App - 9 Interactive Modules) |
-
----
-
-## 🚀 Quick Start & Installation
-
-### 1. Prerequisites
-- Python 3.10+
-- Git
-
-### 2. Clone Repository & Setup Virtual Environment
-```bash
-git clone https://github.com/Surana12345/AI-Job-Hunter-Agentic-AI-.git
-cd "AI Job Hunter (Agentic AI)"
-
-# Create virtual environment
-python -m venv venv
-
-# Activate virtual environment
-# Windows (PowerShell):
-.\venv\Scripts\Activate.ps1
-# macOS/Linux:
-source venv/bin/activate
 ```
-
-### 3. Install Dependencies
-```bash
-pip install -r requirements.txt
-```
-
-### 4. Configure Environment Variables
-Copy `.env.example` to `.env` and set your Google Gemini API key:
-```bash
-GOOGLE_API_KEY=your_gemini_api_key_here
-JWT_SECRET_KEY=dev-secret-key-change-in-production
+ USER PROFILE MEMORY
+       │
+       ▼
+ RESUME / SKILL ANALYSIS (Profile Agent)
+       │
+       ▼
+ JOB DISCOVERY (Connector Adapters: Remotive, Adzuna, Career Feeds)
+       │
+       ▼
+ JOB NORMALIZATION & DEDUPLICATION
+       │
+       ▼
+ HYBRID MATCHING & SCORING (Skills 30%, Exp 20%, Role 15%, Loc 10%, Sal 10%, Edu 10%, Fresh 5%)
+       │
+       ▼
+ DECISION AGENT ROUTING (90-100 Full Auto | 80-89 Assisted | 70-79 Review | <70 Skip)
+       │
+  ┌────┴───────────────────────────┐
+  ▼                                ▼
+ APPLICATION AGENT              OUTREACH AGENT
+ (Form Mapping, Policy Check)   (Recruiter Cold Emails)
+  │                                │
+  └────────────────┬───────────────┘
+                   ▼
+ APPLICATION TRACKER (DISCOVERED -> MATCHED -> READY -> APPLIED -> SHORTLISTED -> INTERVIEW -> OFFER)
+                   │
+                   ▼
+ SKILL-GAP & CAREER INTELLIGENCE ANALYTICS (Outcome Feedback Loop)
 ```
 
 ---
 
-## 💻 Running the Application
+## 🛠️ Multi-Agent System Modules
 
-### Option A: Local Development Launcher (Recommended)
-Run both Backend and Frontend concurrently using the automated script:
+1. **Profile Agent (`profile_agent.py`)**:
+   - Resume document parsing & structured extraction into a canonical candidate profile JSON schema.
+   - Separates verified user facts from AI generations.
+
+2. **Job Discovery Agent (`job_discovery.py`)**:
+   - Connector/adapter architecture normalizing title, company, location, salary, description, and deduplicating jobs.
+
+3. **Job Matching & Scoring Agent (`job_matching.py`)**:
+   - Calculates weighted score: Skills (30%), Experience (20%), Role (15%), Location (10%), Salary (10%), Education (10%), Freshness (5%).
+   - Action routing: `>=90 FULL_AUTO`, `80-89 ASSISTED`, `70-79 REVIEW`, `<70 SKIP`.
+
+4. **Application Agent (`application_agent.py`)**:
+   - Form field mapping from canonical profile & tailored response generation.
+   - Enforces human-in-the-loop automation policies (`FULL_AUTO`, `ASSISTED`, `MANUAL`).
+
+5. **Outreach Agent (`outreach_agent.py`)**:
+   - Generates personalized recruiter cold emails & tracks recipient interaction status.
+
+6. **Skill-Gap & Career Intelligence Agent (`skill_gap_agent.py`)**:
+   - Feedback loop analyzing application outcome patterns to identify repeatedly missing skills and update search strategy.
+
+---
+
+## 💻 Quick Start & Running
+
 ```powershell
+# Launch Unified CareerOps Web Server:
 .\start_app.ps1
 ```
-- Streamlit Dashboard: `http://localhost:8501`
-- FastAPI Docs: `http://127.0.0.1:8000/docs`
 
-### Option B: Docker Containerized Deployment
-```bash
-docker-compose up --build -d
-```
-
----
-
-## 📜 License
-MIT License. Built for candidate empowerment and ethical AI career assistance.
+- **Web Application Portal**: `http://127.0.0.1:8000/`
+- **3D Landing Page**: `http://127.0.0.1:8000/landing`
+- **FastAPI OpenAPI Swagger Docs**: `http://127.0.0.1:8000/docs`

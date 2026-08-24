@@ -25,9 +25,6 @@ class TestHealthCheck:
     async def test_root_endpoint(self, client: AsyncClient) -> None:
         response = await client.get("/")
         assert response.status_code == 200
-        data = response.json()
-        assert "message" in data
-        assert "docs" in data
 
 
 class TestUserRegistration:

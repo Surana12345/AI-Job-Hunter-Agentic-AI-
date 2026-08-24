@@ -24,6 +24,11 @@ from backend.agents.nodes.recruiter_message import recruiter_message_node
 from backend.agents.nodes.resume_parser import resume_parser_node
 from backend.agents.nodes.resume_tailor import resume_tailor_node
 from backend.agents.nodes.salary_negotiation import salary_negotiation_node
+from backend.agents.nodes.profile_agent import profile_agent_node
+from backend.agents.nodes.job_matching import job_matching_node
+from backend.agents.nodes.application_agent import application_agent_node
+from backend.agents.nodes.outreach_agent import outreach_agent_node
+from backend.agents.nodes.skill_gap_agent import skill_gap_agent_node
 from backend.agents.state import AgentState
 from backend.utils.logger import get_logger
 
@@ -66,15 +71,20 @@ def route_by_intent(state: AgentState) -> str:
 
     intent_to_node = {
         "parse_resume": "resume_parser",
+        "extract_profile": "profile_extractor",
         "analyze_ats": "ats_scorer",
+        "match_job": "job_matching_eval",
         "tailor_resume": "resume_tailor",
         "discover_jobs": "job_discovery",
         "research_company": "company_research",
         "generate_cover_letter": "cover_letter_gen",
         "generate_recruiter_message": "recruiter_message_gen",
+        "prepare_application": "application_prep",
+        "prepare_outreach": "outreach_prep",
         "prepare_interview": "interview_prep_gen",
         "mock_interview": "mock_interview_eval",
         "salary_negotiation": "salary_negotiation_eval",
+        "analyze_skill_gap": "skill_gap_eval",
     }
 
     next_node = intent_to_node.get(intent, "end")
@@ -129,30 +139,40 @@ def build_orchestrator_graph() -> StateGraph:
 
     # --- Add Nodes ---
     graph.add_node("resume_parser", resume_parser_node)
+    graph.add_node("profile_extractor", profile_agent_node)
     graph.add_node("ats_scorer", ats_scorer_node)
+    graph.add_node("job_matching_eval", job_matching_node)
     graph.add_node("resume_tailor", resume_tailor_node)
     graph.add_node("job_discovery", job_discovery_node)
     graph.add_node("company_research", company_research_node)
     graph.add_node("cover_letter_gen", cover_letter_node)
     graph.add_node("recruiter_message_gen", recruiter_message_node)
+    graph.add_node("application_prep", application_agent_node)
+    graph.add_node("outreach_prep", outreach_agent_node)
     graph.add_node("interview_prep_gen", interview_prep_node)
     graph.add_node("mock_interview_eval", mock_interview_node)
     graph.add_node("salary_negotiation_eval", salary_negotiation_node)
+    graph.add_node("skill_gap_eval", skill_gap_agent_node)
 
     # --- Set Entry Point ---
     graph.set_conditional_entry_point(
         route_by_intent,
         {
             "resume_parser": "resume_parser",
+            "profile_extractor": "profile_extractor",
             "ats_scorer": "ats_scorer",
+            "job_matching_eval": "job_matching_eval",
             "resume_tailor": "resume_tailor",
             "job_discovery": "job_discovery",
             "company_research": "company_research",
             "cover_letter_gen": "cover_letter_gen",
             "recruiter_message_gen": "recruiter_message_gen",
+            "application_prep": "application_prep",
+            "outreach_prep": "outreach_prep",
             "interview_prep_gen": "interview_prep_gen",
             "mock_interview_eval": "mock_interview_eval",
             "salary_negotiation_eval": "salary_negotiation_eval",
+            "skill_gap_eval": "skill_gap_eval",
             "end": END,
         },
     )
@@ -178,13 +198,18 @@ def build_orchestrator_graph() -> StateGraph:
 
     # Terminal nodes
     graph.add_edge("resume_tailor", END)
+    graph.add_edge("profile_extractor", END)
+    graph.add_edge("job_matching_eval", END)
     graph.add_edge("job_discovery", END)
     graph.add_edge("company_research", END)
     graph.add_edge("cover_letter_gen", END)
     graph.add_edge("recruiter_message_gen", END)
+    graph.add_edge("application_prep", END)
+    graph.add_edge("outreach_prep", END)
     graph.add_edge("interview_prep_gen", END)
     graph.add_edge("mock_interview_eval", END)
     graph.add_edge("salary_negotiation_eval", END)
+    graph.add_edge("skill_gap_eval", END)
 
     logger.info("Orchestrator graph built successfully")
     return graph

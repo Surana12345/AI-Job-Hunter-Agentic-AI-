@@ -22,11 +22,7 @@ async def create_all_tables() -> None:
     """
     # Import all models so they register with Base.metadata
     # These imports are intentionally inside the function to avoid circular imports
-    import backend.auth.models  # noqa: F401
-    import backend.resume.models  # noqa: F401
-    import backend.jobs.models  # noqa: F401
-    import backend.assets.models  # noqa: F401
-    import backend.tracker.models  # noqa: F401
+    import backend.database.models  # noqa: F401
 
     logger.info("Creating database tables...")
 

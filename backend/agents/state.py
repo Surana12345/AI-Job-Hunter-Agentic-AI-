@@ -102,6 +102,15 @@ class AgentState(TypedDict, total=False):
     negotiation_plan: dict[str, Any]
     company_info: CompanyInfo
 
+    # --- CareerOps Fields ---
+    user_profile: dict[str, Any]
+    canonical_profile: dict[str, Any]
+    hybrid_match: dict[str, Any]
+    application_package: dict[str, Any]
+    outreach_email: dict[str, Any]
+    career_intelligence: dict[str, Any]
+    application_history: list[dict[str, Any]]
+
     # --- Control Flow ---
     current_agent: str
     next_agent: str
