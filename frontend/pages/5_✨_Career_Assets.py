@@ -95,3 +95,31 @@ with tab3:
 
             except Exception as e:
                 st.error(f"Generation failed: {e}")
+
+st.divider()
+st.subheader("📦 Export Complete Application Dossier (PDF)")
+st.caption("Compile your Cover Letter, Outreach Message, and Interview Guide into a single formatted PDF file.")
+
+exp_title = st.text_input("Application Role Title", value="Senior Engineer", key="exp_title")
+exp_company = st.text_input("Application Company Name", value="Tech Corp", key="exp_company")
+
+if st.button("Generate & Download PDF Dossier", type="primary"):
+    with st.spinner("Compiling PDF application dossier..."):
+        try:
+            pdf_bytes = client.export_application_pdf(
+                job_title=exp_title,
+                company_name=exp_company,
+                cover_letter=st.session_state.get("last_cl", ""),
+                recruiter_message=st.session_state.get("last_rm", ""),
+                interview_prep=st.session_state.get("last_ip"),
+            )
+            st.download_button(
+                label="📥 Download Application_Package.pdf",
+                data=pdf_bytes,
+                file_name=f"Application_Package_{exp_company.replace(' ', '_')}.pdf",
+                mime="application/pdf",
+            )
+            st.success("PDF Dossier compiled ready for download!")
+        except Exception as e:
+            st.error(f"PDF Export failed: {e}")
+

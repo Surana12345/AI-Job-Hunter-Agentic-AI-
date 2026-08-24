@@ -83,3 +83,15 @@ class AssetListItem(BaseModel):
     created_at: datetime
 
     model_config = {"from_attributes": True}
+
+
+class PDFExportRequest(BaseModel):
+    """Request to export a compiled PDF application dossier."""
+
+    job_title: str = Field("Software Engineer")
+    company_name: str = Field("Target Company")
+    cover_letter: Optional[str] = ""
+    tailored_resume: Optional[str] = ""
+    recruiter_message: Optional[str] = ""
+    interview_prep: Optional[dict[str, Any]] = None
+

@@ -45,6 +45,19 @@ async def search_jobs(
 
 
 @router.get(
+    "/recommendations",
+    summary="Get AI job recommendations",
+    description="Get background automated job discovery recommendations.",
+)
+async def get_job_recommendations(
+    current_user: dict = Depends(get_current_user),
+):
+    from backend.scheduler.job_monitor import run_background_job_poll
+    recs = await run_background_job_poll(query="Software Engineer")
+    return recs
+
+
+@router.get(
     "/list",
     response_model=list[JobListItem],
     summary="List discovered jobs",

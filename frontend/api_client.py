@@ -141,6 +141,29 @@ class APIClient:
         resp.raise_for_status()
         return resp.json()
 
+    def export_application_pdf(
+        self,
+        job_title: str,
+        company_name: str,
+        cover_letter: str = "",
+        tailored_resume: str = "",
+        recruiter_message: str = "",
+        interview_prep: Optional[dict] = None,
+    ) -> bytes:
+        url = f"{BASE_URL}/assets/export-pdf"
+        payload = {
+            "job_title": job_title,
+            "company_name": company_name,
+            "cover_letter": cover_letter,
+            "tailored_resume": tailored_resume,
+            "recruiter_message": recruiter_message,
+            "interview_prep": interview_prep,
+        }
+        resp = requests.post(url, headers=self.headers, json=payload)
+        resp.raise_for_status()
+        return resp.content
+
+
     # --- Tracker Endpoints ---
     def create_application_track(self, job_title: str, company_name: str, location: str = "", status: str = "saved") -> dict:
         url = f"{BASE_URL}/tracker"

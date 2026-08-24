@@ -7,7 +7,7 @@ Endpoints for generating cover letters, recruiter messages, and interview prep g
 from __future__ import annotations
 
 import json
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.assets.schemas import (
@@ -16,11 +16,13 @@ from backend.assets.schemas import (
     CoverLetterResponse,
     InterviewPrepRequest,
     InterviewPrepResponse,
+    PDFExportRequest,
     RecruiterMessageRequest,
     RecruiterMessageResponse,
 )
 from backend.assets.service import AssetService
 from backend.dependencies import get_current_user, get_db
+from backend.utils.pdf_generator import generate_application_pdf
 
 router = APIRouter(prefix="/assets", tags=["Career Assets"])
 
@@ -145,3 +147,32 @@ async def delete_asset(
 ):
     service = AssetService(db)
     await service.delete_asset(asset_id, current_user["sub"])
+
+
+@router.post(
+    "/export-pdf",
+    summary="Export application package as PDF",
+    description="Generates a downloadable PDF dossier containing Cover Letter, Tailored Resume, Outreach Message, and Interview Guide.",
+)
+async def export_pdf(
+    request: PDFExportRequest,
+    current_user: dict = Depends(get_current_user),
+) -> Response:
+    user_name = current_user.get("full_name", "Candidate")
+    pdf_bytes = generate_application_pdf(
+        candidate_name=user_name,
+        job_title=request.job_title,
+        company_name=request.company_name,
+        cover_letter=request.cover_letter or "",
+        tailored_resume=request.tailored_resume or "",
+        recruiter_message=request.recruiter_message or "",
+        interview_prep=request.interview_prep,
+    )
+    safe_company = request.company_name.replace(" ", "_")
+    filename = f"Application_Package_{safe_company}.pdf"
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+    )
+
