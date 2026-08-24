@@ -105,6 +105,13 @@ def create_app() -> FastAPI:
     app.include_router(assets_router, prefix="/api/v1")
     app.include_router(tracker_router, prefix="/api/v1")
 
+    # --- Static Files Mounting (Web Application UI) ---
+    import os
+    from fastapi.staticfiles import StaticFiles
+    web_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "web")
+    if os.path.exists(web_dir):
+        app.mount("/static", StaticFiles(directory=web_dir), name="static")
+
     # --- Health Check ---
     @app.get(
         "/health",
@@ -122,20 +129,32 @@ def create_app() -> FastAPI:
     @app.get(
         "/",
         tags=["System"],
-        summary="3D Landing Page",
+        summary="Web Application Portal",
         include_in_schema=False,
     )
     async def root():
         from fastapi.responses import FileResponse
-        import os
-        landing_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "landing", "index.html")
-        if os.path.exists(landing_path):
-            return FileResponse(landing_path)
+        web_index = os.path.join(web_dir, "index.html")
+        if os.path.exists(web_index):
+            return FileResponse(web_index)
         return {
             "message": f"Welcome to {settings.app_name} API",
             "version": settings.app_version,
             "docs": "/docs",
         }
+
+    @app.get(
+        "/landing",
+        tags=["System"],
+        summary="3D Landing Page",
+        include_in_schema=False,
+    )
+    async def landing():
+        from fastapi.responses import FileResponse
+        landing_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "landing", "index.html")
+        if os.path.exists(landing_path):
+            return FileResponse(landing_path)
+        return {"docs": "/docs"}
 
     return app
 

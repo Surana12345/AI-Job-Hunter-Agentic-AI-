@@ -1,15 +1,12 @@
-# AI Job Hunter Local Launcher Script
+# AI Job Hunter DevSecOps Web Server Launcher
 
 Write-Host "============================================================" -ForegroundColor Cyan
-Write-Host "  Starting AI Job Hunter (Backend + Frontend)" -ForegroundColor Cyan
+Write-Host "  Starting AI Job Hunter DevSecOps Web Server" -ForegroundColor Cyan
 Write-Host "============================================================" -ForegroundColor Cyan
 
-# Start Backend Server in Background
-Write-Host "1. Launching FastAPI Backend on http://127.0.0.1:8000 ..." -ForegroundColor Green
-$backendProcess = Start-Process -FilePath "d:\AI Job Hunter (Agentic AI)\venv\Scripts\python.exe" -ArgumentList "-m uvicorn backend.main:app --host 127.0.0.1 --port 8000" -PassThru -NoNewWindow
+Write-Host "Launching Unified Web Server & FastAPI API on http://127.0.0.1:8000 ..." -ForegroundColor Green
+Write-Host "• Web Application Portal: http://127.0.0.1:8000/" -ForegroundColor Yellow
+Write-Host "• 3D Interactive Landing Page: http://127.0.0.1:8000/landing" -ForegroundColor Yellow
+Write-Host "• OpenAPI Swagger Docs: http://127.0.0.1:8000/docs" -ForegroundColor Yellow
 
-Start-Sleep -Seconds 3
-
-# Start Streamlit Frontend
-Write-Host "2. Launching Streamlit Frontend on http://localhost:8501 ..." -ForegroundColor Green
-& "d:\AI Job Hunter (Agentic AI)\venv\Scripts\streamlit.exe" run frontend/app.py
+& "d:\AI Job Hunter (Agentic AI)\venv\Scripts\python.exe" -m uvicorn backend.main:app --host 127.0.0.1 --port 8000 --reload

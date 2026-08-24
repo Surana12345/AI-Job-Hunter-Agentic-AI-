@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Job Hunter | Agentic AI Career Platform</title>
+  <meta name="description" content="DevSecOps-hardened Agentic AI Web Application for Job Discovery, ATS Optimization, Mock Interviews & Salary Negotiation.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+  <!-- Auth Screen (Shown when logged out) -->
+  <div id="auth-screen" class="auth-container">
+    <div class="auth-box glass-panel">
+      <div class="auth-header">
+        <div class="logo-icon"><i class="fa-solid fa-brain"></i></div>
+        <h1>AI Job Hunter</h1>
+        <p>DevSecOps Agentic Career Platform</p>
+      </div>
+
+      <div class="auth-tabs">
+        <button id="tab-login-btn" class="auth-tab active" onclick="switchAuthTab('login')"><i class="fa-solid fa-lock"></i> Sign In</button>
+        <button id="tab-register-btn" class="auth-tab" onclick="switchAuthTab('register')"><i class="fa-solid fa-user-plus"></i> Register</button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="login-form" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label><i class="fa-solid fa-envelope"></i> Email Address</label>
+          <input type="email" id="login-email" required placeholder="candidate@example.com">
+        </div>
+        <div class="form-group">
+          <label><i class="fa-solid fa-key"></i> Password</label>
+          <input type="password" id="login-password" required placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn-primary full-width"><i class="fa-solid fa-right-to-bracket"></i> Sign In to Platform</button>
+      </form>
+
+      <!-- Register Form -->
+      <form id="register-form" style="display:none;" onsubmit="handleRegister(event)">
+        <div class="form-group">
+          <label><i class="fa-solid fa-user"></i> Full Name</label>
+          <input type="text" id="reg-name" required placeholder="John Doe">
+        </div>
+        <div class="form-group">
+          <label><i class="fa-solid fa-envelope"></i> Email Address</label>
+          <input type="email" id="reg-email" required placeholder="candidate@example.com">
+        </div>
+        <div class="form-group">
+          <label><i class="fa-solid fa-key"></i> Password</label>
+          <input type="password" id="reg-password" required placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn-primary full-width"><i class="fa-solid fa-user-check"></i> Create Candidate Account</button>
+      </form>
+
+      <div id="auth-alert" class="alert-box" style="display:none;"></div>
+    </div>
+  </div>
+
+  <!-- Main Web Application Dashboard (Shown when logged in) -->
+  <div id="app-screen" class="app-layout" style="display:none;">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <i class="fa-solid fa-brain logo-icon"></i>
+        <span>AI Job Hunter</span>
+      </div>
+
+      <div class="user-profile-badge">
+        <div class="avatar-circle" id="user-avatar">C</div>
+        <div class="user-info">
+          <div class="user-name" id="user-display-name">Candidate</div>
+          <div class="user-email" id="user-display-email">candidate@example.com</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-menu">
+        <a class="nav-item active" data-view="dashboard" onclick="navigate('dashboard')"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+        <a class="nav-item" data-view="resumes" onclick="navigate('resumes')"><i class="fa-solid fa-file-lines"></i> Resume Manager</a>
+        <a class="nav-item" data-view="jobs" onclick="navigate('jobs')"><i class="fa-solid fa-magnifying-glass"></i> Job Discovery</a>
+        <a class="nav-item" data-view="ats" onclick="navigate('ats')"><i class="fa-solid fa-bullseye"></i> ATS Analyzer</a>
+        <a class="nav-item" data-view="assets" onclick="navigate('assets')"><i class="fa-solid fa-wand-magic-sparkles"></i> Career Assets</a>
+        <a class="nav-item" data-view="tracker" onclick="navigate('tracker')"><i class="fa-solid fa-list-check"></i> Application Tracker</a>
+        <a class="nav-item" data-view="company" onclick="navigate('company')"><i class="fa-solid fa-building"></i> Company Intelligence</a>
+        <a class="nav-item" data-view="interview" onclick="navigate('interview')"><i class="fa-solid fa-microphone"></i> AI Mock Interview</a>
+        <a class="nav-item" data-view="salary" onclick="navigate('salary')"><i class="fa-solid fa-handshake-simple"></i> Salary Negotiator</a>
+        <a class="nav-item" data-view="autohunter" onclick="navigate('autohunter')"><i class="fa-solid fa-robot"></i> Automatic Hunter</a>
+        <a class="nav-item" data-view="profile" onclick="navigate('profile')"><i class="fa-solid fa-user-gear"></i> Profile</a>
+        <a class="nav-item" data-view="settings" onclick="navigate('settings')"><i class="fa-solid fa-sliders"></i> Settings</a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="btn-logout" onclick="handleLogout()"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out</button>
+      </div>
+    </aside>
+
+    <!-- Main Content View Container -->
+    <main class="content-area">
+
+      <!-- View 1: Dashboard -->
+      <section id="view-dashboard" class="view-panel active">
+        <div class="page-title">
+          <h2>📊 Platform Overview</h2>
+          <p>Real-time analytics across applications, resume index, and AI recommendations.</p>
+        </div>
+
+        <div class="metrics-grid">
+          <div class="metric-card glass-panel">
+            <div class="metric-icon purple"><i class="fa-solid fa-briefcase"></i></div>
+            <div class="metric-value" id="dash-saved">0</div>
+            <div class="metric-label">Tracked Roles</div>
+          </div>
+          <div class="metric-card glass-panel">
+            <div class="metric-icon cyan"><i class="fa-solid fa-paper-plane"></i></div>
+            <div class="metric-value" id="dash-applied">0</div>
+            <div class="metric-label">Applications Sent</div>
+          </div>
+          <div class="metric-card glass-panel">
+            <div class="metric-icon green"><i class="fa-solid fa-comments"></i></div>
+            <div class="metric-value" id="dash-interview">0</div>
+            <div class="metric-label">Interviews Scheduled</div>
+          </div>
+          <div class="metric-card glass-panel">
+            <div class="metric-icon pink"><i class="fa-solid fa-trophy"></i></div>
+            <div class="metric-value" id="dash-offer">0</div>
+            <div class="metric-label">Offers Received</div>
+          </div>
+        </div>
+
+        <div class="dashboard-grid margin-top">
+          <div class="glass-panel card-padding">
+            <h3>⚡ Agentic System Status</h3>
+            <ul class="status-list">
+              <li><i class="fa-solid fa-circle-check text-green"></i> FastAPI DevSecOps Server: <strong>Active (38 Endpoints)</strong></li>
+              <li><i class="fa-solid fa-circle-check text-green"></i> LangGraph Orchestrator: <strong>Ready</strong></li>
+              <li><i class="fa-solid fa-circle-check text-green"></i> Gemini 2.5 LLM Engine: <strong>Connected</strong></li>
+              <li><i class="fa-solid fa-circle-check text-green"></i> ChromaDB Vectorstore: <strong>Indexed</strong></li>
+            </ul>
+          </div>
+          <div class="glass-panel card-padding">
+            <h3>🎯 Quick Launch</h3>
+            <div class="quick-buttons">
+              <button class="btn-secondary" onclick="navigate('jobs')"><i class="fa-solid fa-magnifying-glass"></i> Search Jobs</button>
+              <button class="btn-secondary" onclick="navigate('ats')"><i class="fa-solid fa-bullseye"></i> Calculate ATS Fit</button>
+              <button class="btn-secondary" onclick="navigate('interview')"><i class="fa-solid fa-microphone"></i> Practice Interview</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- View 2: Resume Manager -->
+      <section id="view-resumes" class="view-panel">
+        <div class="page-title">
+          <h2>📄 Resume Intelligence Manager</h2>
+          <p>Upload PDF/DOCX resumes for automatic text extraction, skill parsing, and ChromaDB vector indexing.</p>
+        </div>
+
+        <div class="glass-panel card-padding">
+          <form onsubmit="handleResumeUpload(event)">
+            <div class="form-group">
+              <label>Select Resume File (PDF or DOCX)</label>
+              <input type="file" id="resume-file" accept=".pdf,.docx" required>
+            </div>
+            <button type="submit" class="btn-primary"><i class="fa-solid fa-upload"></i> Upload & AI-Parse Resume</button>
+          </form>
+        </div>
+
+        <div class="glass-panel card-padding margin-top">
+          <h3>Your Parsed Resumes</h3>
+          <div id="resume-list-container">Loading resumes...</div>
+        </div>
+      </section>
+
+      <!-- View 3: Job Discovery -->
+      <section id="view-jobs" class="view-panel">
+        <div class="page-title">
+          <h2>🔍 Multi-Source Job Discovery</h2>
+          <p>Aggregate software engineering and AI job listings across Remotive & Adzuna provider APIs.</p>
+        </div>
+
+        <div class="glass-panel card-padding">
+          <form onsubmit="handleJobSearch(event)" class="inline-form">
+            <input type="text" id="job-search-title" placeholder="Job Title / Keywords (e.g. Python Developer)" required>
+            <input type="text" id="job-search-loc" placeholder="Location (e.g. Remote)">
+            <button type="submit" class="btn-primary"><i class="fa-solid fa-magnifying-glass"></i> Search Opportunities</button>
+          </form>
+        </div>
+
+        <div id="job-results-container" class="grid-cards margin-top"></div>
+      </section>
+
+      <!-- View 4: ATS Analyzer -->
+      <section id="view-ats" class="view-panel">
+        <div class="page-title">
+          <h2>🎯 ATS Compatibility Analyzer & Tailor</h2>
+          <p>Score your resume against any job description, identify keyword gaps, and generate AI tailored recommendations.</p>
+        </div>
+
+        <div class="glass-panel card-padding">
+          <form onsubmit="handleATSAnalyze(event)">
+            <div class="form-group">
+              <label>Target Job Title</label>
+              <input type="text" id="ats-job-title" required placeholder="Senior Backend Engineer">
+            </div>
+            <div class="form-group">
+              <label>Job Description</label>
+              <textarea id="ats-job-desc" rows="5" required placeholder="Paste target job description here..."></textarea>
+            </div>
+            <button type="submit" class="btn-primary"><i class="fa-solid fa-calculator"></i> Calculate ATS Match & Keyword Gap</button>
+          </form>
+        </div>
+
+        <div id="ats-result-box" class="glass-panel card-padding margin-top" style="display:none;"></div>
+      </section>
+
+      <!-- View 5: Career Assets -->
+      <section id="view-assets" class="view-panel">
+        <div class="page-title">
+          <h2>✨ AI Career Assets & PDF Exporter</h2>
+          <p>Generate tailored Cover Letters, LinkedIn Outreach messages, Interview Prep Guides, and ReportLab PDF dossiers.</p>
+        </div>
+
+        <div class="glass-panel card-padding">
+          <form onsubmit="handleGenerateCoverLetter(event)">
+            <div class="form-group">
+              <label>Target Job Title</label>
+              <input type="text" id="asset-job-title" required placeholder="Senior AI Engineer">
+            </div>
+            <div class="form-group">
+              <label>Company Name</label>
+              <input type="text" id="asset-company" required placeholder="Acme Corp">
+            </div>
+            <div class="form-group">
+              <label>Job Description</label>
+              <textarea id="asset-job-desc" rows="4" placeholder="Job description requirements..."></textarea>
+            </div>
+            <button type="submit" class="btn-primary"><i class="fa-solid fa-wand-magic-sparkles"></i> Generate Tailored Cover Letter</button>
+          </form>
+        </div>
+
+        <div id="asset-result-box" class="glass-panel card-padding margin-top" style="display:none;"></div>
+      </section>
+
+      <!-- View 6: Application Tracker -->
+      <section id="view-tracker" class="view-panel">
+        <div class="page-title">
+          <h2>📊 Application Pipeline Tracker</h2>
+          <p>Track your job applications through lifecycle stages: Saved, Applied, Interview, Offer, Rejected.</p>
+        </div>
+
+        <div class="glass-panel card-padding">
+          <div id="tracker-list-container">Loading application pipeline...</div>
+        </div>
+      </section>
+
+      <!-- View 7: Company Intelligence -->
+      <section id="view-company" class="view-panel">
+        <div class="page-title">
+          <h2>🏢 Company Intelligence Research</h2>
+          <p>AI agent analysis of target company mission, technical stack, culture, products, and interview strategies.</p>
+        </div>
+
+        <div class="glass-panel card-padding">
+          <form onsubmit="handleCompanyResearch(event)" class="inline-form">
+            <input type="text" id="company-name-input" placeholder="Company Name (e.g. OpenAI, Google, Stripe)" required>
+            <button type="submit" class="btn-primary"><i class="fa-solid fa-brain"></i> Research Company</button>
+          </form>
+        </div>
+
+        <div id="company-result-box" class="glass-panel card-padding margin-top" style="display:none;"></div>
+      </section>
+
+      <!-- View 8: AI Mock Interview -->
+      <section id="view-interview" class="view-panel">
+        <div class="page-title">
+          <h2>🎙️ AI Mock Interview Simulator</h2>
+          <p>Practice technical and behavioral interview questions with real-time 1-10 scoring, STAR feedback, and model answers.</p>
+        </div>
+
+        <div class="glass-panel card-padding">
+          <form onsubmit="handleMockInterview(event)">
+            <div class="form-group">
+              <label>Target Role Title</label>
+              <input type="text" id="interview-role" required value="Senior Python Engineer">
+            </div>
+            <div class="form-group">
+              <label>Company Name</label>
+              <input type="text" id="interview-company" required value="TechCorp">
+            </div>
+            <div class="form-group">
+              <label>Interview Question</label>
+              <input type="text" id="interview-question" required value="How do you handle asynchronous database connections in high-throughput FastAPI microservices?">
+            </div>
+            <div class="form-group">
+              <label>Your Response / Answer</label>
+              <textarea id="interview-answer" rows="4" required placeholder="Explain your approach using connection pooling, async SQLAlchemy, and lifespan context managers..."></textarea>
+            </div>
+            <button type="submit" class="btn-primary"><i class="fa-solid fa-chart-line"></i> Evaluate Answer & Get STAR Feedback</button>
+          </form>
+        </div>
+
+        <div id="interview-result-box" class="glass-panel card-padding margin-top" style="display:none;"></div>
+      </section>
+
+      <!-- View 9: Salary Negotiator -->
+      <section id="view-salary" class="view-panel">
+        <div class="page-title">
+          <h2>💰 Salary Negotiation & Offer Evaluator</h2>
+          <p>AI market benchmarking (25th, 50th, 75th percentiles), offer assessment, and counter-offer email generator.</p>
+        </div>
+
+        <div class="glass-panel card-padding">
+          <form onsubmit="handleSalaryNegotiation(event)">
+            <div class="grid-form-2">
+              <div class="form-group">
+                <label>Job Title</label>
+                <input type="text" id="sal-job-title" required value="Senior Software Engineer">
+              </div>
+              <div class="form-group">
+                <label>Company Name</label>
+                <input type="text" id="sal-company" required value="Acme Corp">
+              </div>
+              <div class="form-group">
+                <label>Offered Base Salary ($)</label>
+                <input type="number" id="sal-base" required value="140000">
+              </div>
+              <div class="form-group">
+                <label>Offered Bonus ($)</label>
+                <input type="number" id="sal-bonus" value="15000">
+              </div>
+              <div class="form-group">
+                <label>Offered Equity ($)</label>
+                <input type="number" id="sal-equity" value="20000">
+              </div>
+              <div class="form-group">
+                <label>Location</label>
+                <input type="text" id="sal-loc" value="Remote (US)">
+              </div>
+            </div>
+            <button type="submit" class="btn-primary"><i class="fa-solid fa-calculator"></i> Benchmark Offer & Draft Counter Strategy</button>
+          </form>
+        </div>
+
+        <div id="salary-result-box" class="glass-panel card-padding margin-top" style="display:none;"></div>
+      </section>
+
+      <!-- View 10: Automatic Job Hunter -->
+      <section id="view-autohunter" class="view-panel">
+        <div class="page-title">
+          <h2>🤖 Automatic Job Hunter Bot</h2>
+          <p>Automated agentic monitor scanning providers, calculating ATS scores, and queueing application packages.</p>
+        </div>
+
+        <div class="glass-panel card-padding">
+          <button onclick="fetchAutoHunterJobs()" class="btn-primary"><i class="fa-solid fa-rotate"></i> Run Background Agent Cycle Now</button>
+        </div>
+
+        <div id="autohunter-results" class="margin-top"></div>
+      </section>
+
+      <!-- View 11: Candidate Profile -->
+      <section id="view-profile" class="view-panel">
+        <div class="page-title">
+          <h2>👤 Candidate Profile & Preferences</h2>
+          <p>Manage experience parameters, target titles, and compensation expectations.</p>
+        </div>
+
+        <div class="glass-panel card-padding">
+          <form onsubmit="handleSaveProfile(event)">
+            <div class="form-group">
+              <label>Target Job Title</label>
+              <input type="text" id="prof-target-title" value="Senior AI / Software Engineer">
+            </div>
+            <div class="form-group">
+              <label>Experience Level</label>
+              <select id="prof-exp">
+                <option value="Entry Level">Entry Level (0-2 yrs)</option>
+                <option value="Mid Level">Mid Level (3-5 yrs)</option>
+                <option value="Senior Level" selected>Senior Level (5-8 yrs)</option>
+                <option value="Staff/Lead">Lead / Staff (8+ yrs)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Target Base Salary ($/yr)</label>
+              <input type="number" id="prof-salary" value="150000">
+            </div>
+            <button type="submit" class="btn-primary"><i class="fa-solid fa-floppy-disk"></i> Save Profile Details</button>
+          </form>
+        </div>
+      </section>
+
+      <!-- View 12: DevSecOps Settings -->
+      <section id="view-settings" class="view-panel">
+        <div class="page-title">
+          <h2>⚙️ DevSecOps & System Settings</h2>
+          <p>Configure LLM engine, API security keys, CORS policies, and auditing options.</p>
+        </div>
+
+        <div class="glass-panel card-padding">
+          <h3>System Security & Health</h3>
+          <ul class="status-list">
+            <li>🔒 <strong>JWT Authentication:</strong> Active (24h token expiration)</li>
+            <li>🛡️ <strong>Direct Password Hashing:</strong> Bcrypt Salted</li>
+            <li>🌐 <strong>CORS Middleware:</strong> Hardened Restrictive Policy</li>
+            <li>📜 <strong>Logging:</strong> Structured JSON Audit Trajectories</li>
+          </ul>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Custom JavaScript App Logic -->
+  <script src="/static/app.js"></script>
+</body>
+</html>
