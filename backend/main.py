@@ -122,10 +122,15 @@ def create_app() -> FastAPI:
     @app.get(
         "/",
         tags=["System"],
-        summary="Root endpoint",
+        summary="3D Landing Page",
         include_in_schema=False,
     )
-    async def root() -> dict:
+    async def root():
+        from fastapi.responses import FileResponse
+        import os
+        landing_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "landing", "index.html")
+        if os.path.exists(landing_path):
+            return FileResponse(landing_path)
         return {
             "message": f"Welcome to {settings.app_name} API",
             "version": settings.app_version,
