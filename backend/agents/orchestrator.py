@@ -19,6 +19,7 @@ from backend.agents.nodes.company_research import company_research_node
 from backend.agents.nodes.cover_letter import cover_letter_node
 from backend.agents.nodes.interview_prep import interview_prep_node
 from backend.agents.nodes.job_discovery import job_discovery_node
+from backend.agents.nodes.mock_interview import mock_interview_node
 from backend.agents.nodes.recruiter_message import recruiter_message_node
 from backend.agents.nodes.resume_parser import resume_parser_node
 from backend.agents.nodes.resume_tailor import resume_tailor_node
@@ -71,6 +72,7 @@ def route_by_intent(state: AgentState) -> str:
         "generate_cover_letter": "cover_letter_gen",
         "generate_recruiter_message": "recruiter_message_gen",
         "prepare_interview": "interview_prep_gen",
+        "mock_interview": "mock_interview_eval",
     }
 
     next_node = intent_to_node.get(intent, "end")
@@ -132,6 +134,7 @@ def build_orchestrator_graph() -> StateGraph:
     graph.add_node("cover_letter_gen", cover_letter_node)
     graph.add_node("recruiter_message_gen", recruiter_message_node)
     graph.add_node("interview_prep_gen", interview_prep_node)
+    graph.add_node("mock_interview_eval", mock_interview_node)
 
     # --- Set Entry Point ---
     graph.set_conditional_entry_point(
@@ -145,6 +148,7 @@ def build_orchestrator_graph() -> StateGraph:
             "cover_letter_gen": "cover_letter_gen",
             "recruiter_message_gen": "recruiter_message_gen",
             "interview_prep_gen": "interview_prep_gen",
+            "mock_interview_eval": "mock_interview_eval",
             "end": END,
         },
     )
@@ -175,6 +179,7 @@ def build_orchestrator_graph() -> StateGraph:
     graph.add_edge("cover_letter_gen", END)
     graph.add_edge("recruiter_message_gen", END)
     graph.add_edge("interview_prep_gen", END)
+    graph.add_edge("mock_interview_eval", END)
 
     logger.info("Orchestrator graph built successfully")
     return graph

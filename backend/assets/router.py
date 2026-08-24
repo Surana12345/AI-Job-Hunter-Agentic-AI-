@@ -16,6 +16,8 @@ from backend.assets.schemas import (
     CoverLetterResponse,
     InterviewPrepRequest,
     InterviewPrepResponse,
+    MockInterviewRequest,
+    MockInterviewResponse,
     PDFExportRequest,
     RecruiterMessageRequest,
     RecruiterMessageResponse,
@@ -175,4 +177,37 @@ async def export_pdf(
         media_type="application/pdf",
         headers={"Content-Disposition": f'attachment; filename="{filename}"'},
     )
+
+
+@router.post(
+    "/mock-interview/evaluate",
+    response_model=MockInterviewResponse,
+    summary="Evaluate mock interview response",
+    description="Real-time AI evaluation, scoring (1-10), model answer, and follow-up question.",
+)
+async def evaluate_mock_interview(
+    request: MockInterviewRequest,
+    current_user: dict = Depends(get_current_user),
+) -> MockInterviewResponse:
+    from backend.agents.orchestrator import run_agent_pipeline
+
+    result = await run_agent_pipeline(
+        intent="mock_interview",
+        state_overrides={
+            "user_id": current_user["sub"],
+            "job_title": request.job_title,
+            "job_company": request.company_name,
+            "interview_question": request.question,
+            "candidate_answer": request.candidate_answer,
+        },
+    )
+
+    eval_data = result.get("interview_evaluation", {})
+    return MockInterviewResponse(
+        score=eval_data.get("score", 7),
+        feedback=eval_data.get("feedback", "Good effort."),
+        improved_answer=eval_data.get("improved_answer", ""),
+        next_question=eval_data.get("next_question", "Tell me about a challenging project."),
+    )
+
 

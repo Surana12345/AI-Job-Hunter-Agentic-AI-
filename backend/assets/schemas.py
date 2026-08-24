@@ -95,3 +95,22 @@ class PDFExportRequest(BaseModel):
     recruiter_message: Optional[str] = ""
     interview_prep: Optional[dict[str, Any]] = None
 
+
+class MockInterviewRequest(BaseModel):
+    """Request to evaluate a candidate's answer in a mock interview."""
+
+    job_title: str = Field("Software Engineer")
+    company_name: str = Field("Target Company")
+    question: str = Field(..., description="The interview question asked")
+    candidate_answer: str = Field(..., description="Candidate's response to evaluate")
+
+
+class MockInterviewResponse(BaseModel):
+    """Mock interview evaluation response."""
+
+    score: int
+    feedback: str
+    improved_answer: str
+    next_question: str
+
+

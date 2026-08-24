@@ -91,6 +91,9 @@ class AgentState(TypedDict, total=False):
     recruiter_message: str
     interview_questions: list[dict[str, str]]
     interview_talking_points: list[str]
+    interview_question: str
+    candidate_answer: str
+    interview_evaluation: dict[str, Any]
     company_info: CompanyInfo
 
     # --- Control Flow ---

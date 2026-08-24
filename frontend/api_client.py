@@ -163,6 +163,19 @@ class APIClient:
         resp.raise_for_status()
         return resp.content
 
+    def evaluate_mock_interview(self, job_title: str, company_name: str, question: str, candidate_answer: str) -> dict:
+        url = f"{BASE_URL}/assets/mock-interview/evaluate"
+        payload = {
+            "job_title": job_title,
+            "company_name": company_name,
+            "question": question,
+            "candidate_answer": candidate_answer,
+        }
+        resp = requests.post(url, headers=self.headers, json=payload)
+        resp.raise_for_status()
+        return resp.json()
+
+
 
     # --- Tracker Endpoints ---
     def create_application_track(self, job_title: str, company_name: str, location: str = "", status: str = "saved") -> dict:
