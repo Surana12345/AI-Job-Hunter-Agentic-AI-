@@ -11,11 +11,13 @@ An autonomous multi-agent platform powered by **LangGraph**, **Gemini 2.5 Flash*
 ```
                       +----------------------------------+
                       |   Streamlit Multi-Page Frontend  |
+                      |          (9 Interactive Pages)   |
                       +----------------------------------+
                                        |
                                        v
                       +----------------------------------+
                       |     FastAPI Async REST API       |
+                      |      (38 Active Endpoints)       |
                       +----------------------------------+
                                        |
                                        v
@@ -25,6 +27,7 @@ An autonomous multi-agent platform powered by **LangGraph**, **Gemini 2.5 Flash*
                     /          |           |            \
                    v           v           v             v
              Resume Agent   ATS Agent  Tailor Agent   Company Agent
+             Cover Letter  Outreach    Mock Interview Negotiator
                    \           |           |            /
                     +----------+-----------+-----------+
                                        |
@@ -35,12 +38,15 @@ An autonomous multi-agent platform powered by **LangGraph**, **Gemini 2.5 Flash*
 ```
 
 ### Key Highlights
-- **🤖 Multi-Agent Orchestration**: State machine pipeline built on **LangGraph** routing tasks dynamically between specialized agents.
+- **🤖 Multi-Agent Orchestration**: State machine pipeline built on **LangGraph** routing tasks dynamically between 10 specialized agent nodes.
 - **📄 Resume Intelligence**: Extracts text from PDF/DOCX files, parses structured JSON skills, and stores vector embeddings in **ChromaDB**.
 - **🎯 ATS Match & Keyword Gap**: Calculates keyword overlap, match percentage, and missing skills vs job descriptions.
 - **🔍 Multi-Source Job Discovery**: Searches technical roles across Remotive and Adzuna APIs with instant bookmarking.
 - **✨ Career Assets Generator**: AI-generated tailored Cover Letters, LinkedIn/Email outreach messages, and Technical/Behavioral Interview Prep Guides.
 - **📊 Application Pipeline Tracker**: Kanban/Table dashboard tracking application stages (`saved`, `applied`, `interview`, `offer`, `rejected`) and conversion analytics.
+- **📦 Application Package Exporter (PDF)**: Formats and exports compiled PDF application dossiers containing cover letters, resume overviews, outreach strategies, and interview guides.
+- **🎙️ AI Mock Interview Simulator**: Real-time interactive mock interview evaluation with 1-10 scoring, STAR feedback, model answers, and follow-up questions.
+- **💰 Salary Negotiation & Offer Evaluator**: Offer evaluation, market benchmarks (25th/50th/75th percentile), counter-offer email generator, and negotiation tactics.
 
 ---
 
@@ -52,9 +58,9 @@ An autonomous multi-agent platform powered by **LangGraph**, **Gemini 2.5 Flash*
 | **LLM Intelligence** | Google Gemini (`gemini-2.5-flash`) |
 | **Vector DB & Embeddings** | ChromaDB, Sentence-Transformers (`all-MiniLM-L6-v2`) |
 | **Backend Framework** | FastAPI, Uvicorn, Async SQLAlchemy, SQLite |
-| **Document Parsing** | PyPDF2, python-docx |
+| **Document & PDF Export** | PyPDF2, python-docx, ReportLab |
 | **Security & Auth** | JWT (JSON Web Tokens), Direct Bcrypt Password Hashing |
-| **Frontend UI** | Streamlit (Multi-page App, Custom Dark Glassmorphic Theme) |
+| **Frontend UI** | Streamlit (Multi-page App - 9 Interactive Modules) |
 
 ---
 
@@ -66,7 +72,7 @@ An autonomous multi-agent platform powered by **LangGraph**, **Gemini 2.5 Flash*
 
 ### 2. Clone Repository & Setup Virtual Environment
 ```bash
-git clone https://github.com/your-username/ai-job-hunter.git
+git clone https://github.com/Surana12345/AI-Job-Hunter-Agentic-AI-.git
 cd "AI Job Hunter (Agentic AI)"
 
 # Create virtual environment
@@ -95,39 +101,20 @@ JWT_SECRET_KEY=dev-secret-key-change-in-production
 
 ## 💻 Running the Application
 
-### Option A: Local Development Launchers
+### Option A: Local Development Launcher (Recommended)
 Run both Backend and Frontend concurrently using the automated script:
 ```powershell
 .\start_app.ps1
 ```
-Or run separately:
-```bash
-# Terminal 1: Backend FastAPI
-python -m uvicorn backend.main:app --host 127.0.0.1 --port 8000 --reload
-
-# Terminal 2: Streamlit Dashboard
-streamlit run frontend/app.py
-```
+- Streamlit Dashboard: `http://localhost:8501`
+- FastAPI Docs: `http://127.0.0.1:8000/docs`
 
 ### Option B: Docker Containerized Deployment
 ```bash
-# Build and run with Docker Compose
 docker-compose up --build -d
 ```
-- FastAPI Server: `http://localhost:8000`
-- Streamlit Dashboard: `http://localhost:8501`
-
----
-
-## 📡 API Endpoints Overview (34 Endpoints)
-
-- **Authentication**: `POST /api/v1/auth/register`, `POST /api/v1/auth/login`, `GET /api/v1/auth/me`
-- **Resume Intelligence**: `POST /api/v1/resume/upload`, `POST /api/v1/resume/{id}/parse`, `POST /api/v1/resume/analyze-ats`, `GET /api/v1/resume/list`
-- **Job Search & Research**: `POST /api/v1/jobs/search`, `GET /api/v1/jobs/list`, `POST /api/v1/jobs/research-company`
-- **Career Assets**: `POST /api/v1/assets/cover-letter`, `POST /api/v1/assets/recruiter-message`, `POST /api/v1/assets/interview-prep`
-- **Application Tracker**: `POST /api/v1/tracker`, `GET /api/v1/tracker/list`, `GET /api/v1/tracker/analytics`, `PATCH /api/v1/tracker/{id}`
 
 ---
 
 ## 📜 License
-MIT License. Built for empowerment and ethical AI career assistance.
+MIT License. Built for candidate empowerment and ethical AI career assistance.
