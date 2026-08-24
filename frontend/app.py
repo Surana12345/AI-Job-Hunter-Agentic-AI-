@@ -146,16 +146,22 @@ def main():
     st.markdown("Select a module from the sidebar navigation menu to get started.")
 
     st.markdown("### Quick Navigation")
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3, col4 = st.columns(4)
     with col1:
         st.info("📄 **Resume Manager**\nUpload and AI-parse your resume.")
         st.info("🔍 **Job Search**\nDiscover technical roles across Remotive & Adzuna.")
+        st.info("👤 **Candidate Profile**\nManage experience and target salary.")
     with col2:
         st.success("🎯 **ATS Analyzer**\nScore compatibility and get keyword gap reports.")
         st.success("✨ **Career Assets**\nGenerate Cover Letters & Outreach Messages.")
+        st.success("⚙️ **Settings**\nConfigure AI model engine & API keys.")
     with col3:
         st.warning("📊 **Application Tracker**\nTrack applications and conversion metrics.")
         st.warning("🏢 **Company Research**\nAI intelligence on target companies & tech stack.")
+        st.warning("🤖 **Automatic Hunter**\nAutomated background job monitoring.")
+    with col4:
+        st.error("🎙️ **Mock Interview**\nAI practice simulator with STAR feedback.")
+        st.error("💰 **Salary Negotiator**\nMarket benchmarks & counter-offer emails.")
 
 if __name__ == "__main__":
     main()
