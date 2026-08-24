@@ -21,6 +21,8 @@ from backend.assets.schemas import (
     PDFExportRequest,
     RecruiterMessageRequest,
     RecruiterMessageResponse,
+    SalaryNegotiationRequest,
+    SalaryNegotiationResponse,
 )
 from backend.assets.service import AssetService
 from backend.dependencies import get_current_user, get_db
@@ -209,5 +211,47 @@ async def evaluate_mock_interview(
         improved_answer=eval_data.get("improved_answer", ""),
         next_question=eval_data.get("next_question", "Tell me about a challenging project."),
     )
+
+
+@router.post(
+    "/salary-negotiation",
+    response_model=SalaryNegotiationResponse,
+    summary="Evaluate offer & generate salary negotiation strategy",
+    description="Analyzes base, bonus, equity vs market benchmarks, and generates counter-offer email script.",
+)
+async def evaluate_salary_negotiation(
+    request: SalaryNegotiationRequest,
+    current_user: dict = Depends(get_current_user),
+) -> SalaryNegotiationResponse:
+    from backend.agents.orchestrator import run_agent_pipeline
+
+    result = await run_agent_pipeline(
+        intent="salary_negotiation",
+        state_overrides={
+            "user_id": current_user["sub"],
+            "job_title": request.job_title,
+            "job_company": request.company_name,
+            "offered_base": request.offered_base,
+            "offered_bonus": request.offered_bonus,
+            "offered_equity": request.offered_equity,
+            "job_location": request.location,
+            "target_counter": request.target_counter or int(request.offered_base * 1.12),
+            "negotiation_notes": request.notes or "",
+        },
+    )
+
+    plan = result.get("negotiation_plan", {})
+    return SalaryNegotiationResponse(
+        market_range=plan.get("market_range", {
+            "percentile_25": request.offered_base,
+            "percentile_50_median": int(request.offered_base * 1.1),
+            "percentile_75": int(request.offered_base * 1.25),
+        }),
+        offer_assessment=plan.get("offer_assessment", "Competitive offer."),
+        recommended_counter=plan.get("recommended_counter", int(request.offered_base * 1.12)),
+        counter_offer_script=plan.get("counter_offer_script", ""),
+        key_levers=plan.get("key_levers", []),
+    )
+
 
 

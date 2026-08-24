@@ -114,3 +114,27 @@ class MockInterviewResponse(BaseModel):
     next_question: str
 
 
+class SalaryNegotiationRequest(BaseModel):
+    """Request to evaluate a job offer and draft counter-offer strategy."""
+
+    job_title: str = Field(..., description="Target job title")
+    company_name: str = Field(..., description="Company name")
+    offered_base: int = Field(..., ge=1, description="Offered base salary in USD")
+    offered_bonus: int = Field(0, description="Offered annual bonus in USD")
+    offered_equity: int = Field(0, description="Offered equity/RSU value in USD")
+    location: str = Field("Remote", description="Job location")
+    target_counter: Optional[int] = Field(None, description="Optional counter goal")
+    notes: Optional[str] = Field("", description="Additional candidate notes/priorities")
+
+
+class SalaryNegotiationResponse(BaseModel):
+    """Salary negotiation evaluation response."""
+
+    market_range: dict[str, int]
+    offer_assessment: str
+    recommended_counter: int
+    counter_offer_script: str
+    key_levers: list[str]
+
+
+

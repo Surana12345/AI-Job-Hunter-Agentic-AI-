@@ -23,6 +23,7 @@ from backend.agents.nodes.mock_interview import mock_interview_node
 from backend.agents.nodes.recruiter_message import recruiter_message_node
 from backend.agents.nodes.resume_parser import resume_parser_node
 from backend.agents.nodes.resume_tailor import resume_tailor_node
+from backend.agents.nodes.salary_negotiation import salary_negotiation_node
 from backend.agents.state import AgentState
 from backend.utils.logger import get_logger
 
@@ -73,6 +74,7 @@ def route_by_intent(state: AgentState) -> str:
         "generate_recruiter_message": "recruiter_message_gen",
         "prepare_interview": "interview_prep_gen",
         "mock_interview": "mock_interview_eval",
+        "salary_negotiation": "salary_negotiation_eval",
     }
 
     next_node = intent_to_node.get(intent, "end")
@@ -135,6 +137,7 @@ def build_orchestrator_graph() -> StateGraph:
     graph.add_node("recruiter_message_gen", recruiter_message_node)
     graph.add_node("interview_prep_gen", interview_prep_node)
     graph.add_node("mock_interview_eval", mock_interview_node)
+    graph.add_node("salary_negotiation_eval", salary_negotiation_node)
 
     # --- Set Entry Point ---
     graph.set_conditional_entry_point(
@@ -149,6 +152,7 @@ def build_orchestrator_graph() -> StateGraph:
             "recruiter_message_gen": "recruiter_message_gen",
             "interview_prep_gen": "interview_prep_gen",
             "mock_interview_eval": "mock_interview_eval",
+            "salary_negotiation_eval": "salary_negotiation_eval",
             "end": END,
         },
     )
@@ -180,6 +184,7 @@ def build_orchestrator_graph() -> StateGraph:
     graph.add_edge("recruiter_message_gen", END)
     graph.add_edge("interview_prep_gen", END)
     graph.add_edge("mock_interview_eval", END)
+    graph.add_edge("salary_negotiation_eval", END)
 
     logger.info("Orchestrator graph built successfully")
     return graph

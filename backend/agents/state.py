@@ -94,6 +94,12 @@ class AgentState(TypedDict, total=False):
     interview_question: str
     candidate_answer: str
     interview_evaluation: dict[str, Any]
+    offered_base: int
+    offered_bonus: int
+    offered_equity: int
+    target_counter: int
+    negotiation_notes: str
+    negotiation_plan: dict[str, Any]
     company_info: CompanyInfo
 
     # --- Control Flow ---

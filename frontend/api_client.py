@@ -175,6 +175,33 @@ class APIClient:
         resp.raise_for_status()
         return resp.json()
 
+    def evaluate_salary_negotiation(
+        self,
+        job_title: str,
+        company_name: str,
+        offered_base: int,
+        offered_bonus: int = 0,
+        offered_equity: int = 0,
+        location: str = "Remote",
+        target_counter: Optional[int] = None,
+        notes: str = "",
+    ) -> dict:
+        url = f"{BASE_URL}/assets/salary-negotiation"
+        payload = {
+            "job_title": job_title,
+            "company_name": company_name,
+            "offered_base": offered_base,
+            "offered_bonus": offered_bonus,
+            "offered_equity": offered_equity,
+            "location": location,
+            "target_counter": target_counter,
+            "notes": notes,
+        }
+        resp = requests.post(url, headers=self.headers, json=payload)
+        resp.raise_for_status()
+        return resp.json()
+
+
 
 
     # --- Tracker Endpoints ---
