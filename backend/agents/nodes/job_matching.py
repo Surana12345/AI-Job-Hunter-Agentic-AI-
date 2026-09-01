@@ -71,23 +71,18 @@ def calculate_hybrid_score(candidate_profile: dict[str, Any], job_details: dict[
 
     final_score = round(total_score, 1)
 
-    # Threshold Action Routing
-    if final_score >= 90:
-        action = "FULL_AUTO"
-        recommendation = "High compatibility score. Eligible for auto application."
-    elif final_score >= 80:
-        action = "ASSISTED"
-        recommendation = "Strong candidate match. Application prepared for user approval."
-    elif final_score >= 70:
-        action = "REVIEW"
-        recommendation = "Moderate match score. Flagged for manual review."
-    else:
-        action = "SKIP"
-        recommendation = "Low compatibility score. Recommended to skip."
+    action, policy = evaluate_action_threshold(final_score)
+    recommendation = {
+        "FULL_AUTO": "High compatibility score. Eligible for auto application.",
+        "ASSISTED": "Strong candidate match. Application prepared for user approval.",
+        "REVIEW": "Moderate match score. Flagged for manual review.",
+        "SKIP": "Low compatibility score. Recommended to skip.",
+    }.get(action, "")
 
     return {
         "final_score": final_score,
         "action": action,
+        "policy": policy,
         "recommendation": recommendation,
         "breakdown": {
             "skills_score": round(skills_score, 1),
@@ -100,6 +95,24 @@ def calculate_hybrid_score(candidate_profile: dict[str, Any], job_details: dict[
             "matched_skills": matched_skills,
         }
     }
+
+
+def evaluate_action_threshold(score: float) -> tuple[str, str]:
+    """CareerOps 4-Tier Decision Routing Thresholds:
+    - 90-100 -> FULL_AUTO
+    - 80-89  -> ASSISTED
+    - 70-79  -> REVIEW (Manual)
+    - < 70   -> SKIP (Manual)
+    """
+    if score >= 90:
+        return "FULL_AUTO", "FULL_AUTO"
+    elif score >= 80:
+        return "ASSISTED", "ASSISTED"
+    elif score >= 70:
+        return "REVIEW", "MANUAL"
+    else:
+        return "SKIP", "MANUAL"
+
 
 
 async def job_matching_node(state: AgentState) -> AgentState:

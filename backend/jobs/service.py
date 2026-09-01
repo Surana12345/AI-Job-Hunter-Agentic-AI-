@@ -18,6 +18,8 @@ from backend.jobs.models import Job
 from backend.jobs.schemas import JobSearchResult
 from backend.jobs.sources.adzuna import search_adzuna
 from backend.jobs.sources.remotive import search_remotive
+from backend.jobs.sources.jsearch import search_jsearch
+from backend.jobs.sources.ats_scrapers import scrape_direct_ats_boards
 from backend.utils.exceptions import NotFoundException
 from backend.utils.helpers import generate_id
 from backend.utils.logger import get_logger
@@ -51,28 +53,48 @@ class JobService:
         Returns:
             List of saved Job records.
         """
-        logger.info("Searching jobs", query=query, location=location)
+        logger.info("Searching jobs across omni-channel feeds", query=query, location=location)
 
         # Aggregate results from all sources
         all_results: list[JobSearchResult] = []
 
-        # Remotive (free, no auth needed)
-        remotive_results = await search_remotive(query=query, max_results=max_results)
-        all_results.extend(remotive_results)
+        # 1. Remotive (Remote developer feeds)
+        try:
+            remotive_results = await search_remotive(query=query, max_results=max_results)
+            all_results.extend(remotive_results)
+        except Exception as e:
+            logger.warning("Remotive search failed", error=str(e))
 
-        # Adzuna (if configured)
+        # 2. JSearch Multi-Aggregator (LinkedIn, Indeed, Glassdoor, ZipRecruiter)
+        try:
+            jsearch_results = await search_jsearch(query=query, location=location, job_type=job_type, max_results=max_results)
+            all_results.extend(jsearch_results)
+        except Exception as e:
+            logger.warning("JSearch search failed", error=str(e))
+
+        # 3. Direct ATS Board Crawlers (Greenhouse, Lever, Ashby)
+        try:
+            ats_results = await scrape_direct_ats_boards(query=query, max_results=10)
+            all_results.extend(ats_results)
+        except Exception as e:
+            logger.warning("Direct ATS board search failed", error=str(e))
+
+        # 4. Adzuna (if configured)
         settings = get_settings()
         if settings.adzuna_app_id and settings.adzuna_api_key:
-            adzuna_results = await search_adzuna(
-                query=query, location=location, max_results=max_results
-            )
-            all_results.extend(adzuna_results)
+            try:
+                adzuna_results = await search_adzuna(
+                    query=query, location=location, max_results=max_results
+                )
+                all_results.extend(adzuna_results)
+            except Exception as e:
+                logger.warning("Adzuna search failed", error=str(e))
 
-        # Deduplicate by source_id
+        # Deduplicate by source_id or title+company
         seen = set()
         unique_results = []
         for r in all_results:
-            key = f"{r.source}:{r.source_id}" if r.source_id else f"{r.title}:{r.company}"
+            key = f"{r.source}:{r.source_id}" if r.source_id else f"{r.title.lower().strip()}:{r.company.lower().strip()}"
             if key not in seen:
                 seen.add(key)
                 unique_results.append(r)

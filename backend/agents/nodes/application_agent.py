@@ -86,7 +86,56 @@ async def application_agent_node(state: AgentState) -> AgentState:
             res_text = "\n".join(lines)
 
         app_pkg = json.loads(res_text)
+
+        # Module 4: Autonomous Submission Execution
+        policy = state.get("policy", "FULL_AUTO")
+        job_url = state.get("job_url", "")
+        cover_letter = state.get("cover_letter", "")
+
+        submission_result = {}
+        if job_url:
+            # Check for direct Greenhouse / Lever URL
+            if "greenhouse.io" in job_url:
+                from backend.automation.ats_direct import DirectATSSubmitter
+                company_slug = job_company.lower().replace(" ", "")
+                job_id = state.get("job_id", "1")
+                submission_result = await DirectATSSubmitter.submit_greenhouse(
+                    company_slug=company_slug,
+                    job_id=job_id,
+                    candidate_profile=profile,
+                    cover_letter=cover_letter,
+                )
+            elif "lever.co" in job_url:
+                from backend.automation.ats_direct import DirectATSSubmitter
+                company_slug = job_company.lower().replace(" ", "")
+                job_id = state.get("job_id", "1")
+                submission_result = await DirectATSSubmitter.submit_lever(
+                    company_slug=company_slug,
+                    job_id=job_id,
+                    candidate_profile=profile,
+                    cover_letter=cover_letter,
+                )
+            else:
+                # Custom portal - launch Playwright browser bot
+                from backend.automation.browser_bot import PlaywrightBrowserAgent
+                bot = PlaywrightBrowserAgent(headless=True)
+                submission_result = await bot.fill_and_submit(
+                    application_url=job_url,
+                    candidate_profile=profile,
+                    cover_letter=cover_letter,
+                    policy=policy,
+                )
+        else:
+            submission_result = {
+                "success": True,
+                "status": "PREPARED_FOR_REVIEW",
+                "method": "form_mapping_ready",
+            }
+
+        app_pkg["execution_result"] = submission_result
+        app_pkg["submission_status"] = submission_result.get("status", "PREPARED_FOR_REVIEW")
         return {**state, "application_package": app_pkg, "current_agent": "application_agent", "error": None}
     except Exception as e:
         logger.error("Failed to generate application package", error=str(e))
         return {**state, "application_package": {}, "current_agent": "application_agent", "error": str(e)}
+

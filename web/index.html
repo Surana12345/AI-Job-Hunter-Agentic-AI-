@@ -109,58 +109,224 @@
     <!-- Main Content Area -->
     <main class="content-area">
 
-      <!-- View 1: Dashboard -->
+      <!-- View 1: Autonomous Command Center -->
       <section id="view-dashboard" class="view-panel active">
-        <div class="page-title">
-          <h2>🎯 CareerOps Platform Overview</h2>
-          <p>Autonomous career operations, application conversion funnels, and real-time agent state trajectories.</p>
+        <div class="page-title" style="display:flex; justify-content:space-between; align-items:flex-end;">
+          <div>
+            <div style="font-size:0.8rem; font-weight:800; color:#818CF8; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:0.3rem;">
+              <i class="fa-solid fa-satellite-dish"></i> AI Job Hunter // Production Control Room
+            </div>
+            <h2>Autonomous Command Center</h2>
+            <p>Interactive multi-agent swarm state, real-time telemetry stream, and closed-loop lifecycle tracker.</p>
+          </div>
+          <div style="display:flex; gap:0.8rem;">
+            <button class="btn-primary" onclick="triggerAutonomousCycle()"><i class="fa-solid fa-play"></i> Run Autonomous Cycle</button>
+            <button class="btn-secondary" onclick="simulateInboundEmail()"><i class="fa-solid fa-envelope-circle-check"></i> Simulate Inbound Email</button>
+          </div>
         </div>
 
+        <!-- Human-in-the-Loop Fallback Alert Banner -->
+        <div id="hitl-alert-banner" class="glass-panel" style="display:none; background:rgba(239, 68, 68, 0.15); border-color:rgba(239, 68, 68, 0.4); padding:1rem 1.5rem; margin-bottom:1.5rem; align-items:center; justify-content:space-between;">
+          <div style="display:flex; align-items:center; gap:1rem;">
+            <i class="fa-solid fa-triangle-exclamation" style="color:#EF4444; font-size:1.4rem;"></i>
+            <div>
+              <strong style="color:#FCA5A5;">Human-in-the-Loop Action Required:</strong>
+              <span id="hitl-alert-text" style="color:#F8FAFC; margin-left:0.5rem;">A portal detected a CAPTCHA challenge during submission.</span>
+            </div>
+          </div>
+          <button class="btn-primary" style="background:#EF4444;" onclick="resolveHITLAction()"><i class="fa-solid fa-user-check"></i> Review & Approve</button>
+        </div>
+
+        <!-- Top Metric Badges (from blueprint) -->
         <div class="metrics-grid">
           <div class="metric-card glass-panel">
-            <div class="metric-icon purple"><i class="fa-solid fa-magnifying-glass"></i></div>
-            <div class="metric-value" id="dash-discovered">127</div>
-            <div class="metric-label">Jobs Discovered</div>
+            <div class="metric-icon purple"><i class="fa-solid fa-globe"></i></div>
+            <div class="metric-value" id="dash-discovered">1,248</div>
+            <div class="metric-label">Discovered Jobs</div>
           </div>
           <div class="metric-card glass-panel">
-            <div class="metric-icon cyan"><i class="fa-solid fa-paper-plane"></i></div>
-            <div class="metric-value" id="dash-applied">32</div>
-            <div class="metric-label">Applications Sent</div>
+            <div class="metric-icon cyan"><i class="fa-solid fa-robot"></i></div>
+            <div class="metric-value" id="dash-applied">342</div>
+            <div class="metric-label">Auto-Applied (Playwright)</div>
           </div>
           <div class="metric-card glass-panel">
-            <div class="metric-icon green"><i class="fa-solid fa-comments"></i></div>
-            <div class="metric-value" id="dash-interviews">6</div>
+            <div class="metric-icon pink"><i class="fa-solid fa-envelope-open-text"></i></div>
+            <div class="metric-value" id="dash-outreach">128</div>
+            <div class="metric-label">Cold Emails Sent</div>
+          </div>
+          <div class="metric-card glass-panel">
+            <div class="metric-icon green"><i class="fa-solid fa-calendar-check"></i></div>
+            <div class="metric-value" id="dash-interviews">14</div>
             <div class="metric-label">Interviews Scheduled</div>
-          </div>
-          <div class="metric-card glass-panel">
-            <div class="metric-icon pink"><i class="fa-solid fa-trophy"></i></div>
-            <div class="metric-value" id="dash-offers">2</div>
-            <div class="metric-label">Offers Extended</div>
           </div>
         </div>
 
-        <div class="dashboard-grid margin-top">
+        <!-- Main Center Grid: Swarm Visualizer + Live Lifecycle Tracker -->
+        <div class="command-center-grid margin-top">
+          
+          <!-- Left: 3D Agent Swarm & Active Pipeline -->
           <div class="glass-panel card-padding">
-            <h3>⚡ Multi-Agent System Architecture</h3>
-            <ul class="status-list">
-              <li><i class="fa-solid fa-circle-check text-green"></i> <strong>Profile Agent:</strong> Active (Canonical Profile JSON Memory)</li>
-              <li><i class="fa-solid fa-circle-check text-green"></i> <strong>Discovery Agent:</strong> Active (Remotive / Adzuna Adapters)</li>
-              <li><i class="fa-solid fa-circle-check text-green"></i> <strong>Job Matching Agent:</strong> Active (Weighted Hybrid Scoring Engine)</li>
-              <li><i class="fa-solid fa-circle-check text-green"></i> <strong>Application Agent:</strong> Active (Form Auto-fill & Policies)</li>
-              <li><i class="fa-solid fa-circle-check text-green"></i> <strong>Outreach Agent:</strong> Active (Recruiter Email Personalization)</li>
-              <li><i class="fa-solid fa-circle-check text-green"></i> <strong>Skill-Gap Agent:</strong> Active (Outcome Feedback Loop)</li>
-            </ul>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.2rem;">
+              <h3 style="font-size:1.15rem;"><i class="fa-solid fa-diagram-project" style="color:#818CF8;"></i> 3D Agent Swarm & Active Pipeline</h3>
+              <span class="status-pill active-pill"><span class="pulse-dot"></span> Autonomous Running</span>
+            </div>
+
+            <div class="swarm-visualizer-container">
+              <div class="swarm-node active" id="node-profile">
+                <div class="node-badge">A1</div>
+                <div class="node-icon"><i class="fa-solid fa-id-card"></i></div>
+                <div class="node-name">Profile Ingest</div>
+                <div class="node-state">JSON Memory</div>
+              </div>
+
+              <div class="swarm-connector"></div>
+
+              <div class="swarm-node active" id="node-discovery">
+                <div class="node-badge">A2</div>
+                <div class="node-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+                <div class="node-name">Omni Discovery</div>
+                <div class="node-state">Greenhouse / Lever</div>
+              </div>
+
+              <div class="swarm-connector"></div>
+
+              <div class="swarm-node active" id="node-matcher">
+                <div class="node-badge">A3</div>
+                <div class="node-icon"><i class="fa-solid fa-sliders"></i></div>
+                <div class="node-name">7-Factor Matcher</div>
+                <div class="node-state">90-100 Full Auto</div>
+              </div>
+
+              <!-- Central Core -->
+              <div class="swarm-core active" id="node-gemini">
+                <div class="core-glow"></div>
+                <i class="fa-solid fa-brain"></i>
+                <span>Gemini Hub</span>
+              </div>
+
+              <div class="swarm-connector"></div>
+
+              <div class="swarm-node active" id="node-browser">
+                <div class="node-badge">A4</div>
+                <div class="node-icon"><i class="fa-solid fa-robot"></i></div>
+                <div class="node-name">Playwright Bot</div>
+                <div class="node-state">DOM Auto-Fill</div>
+              </div>
+
+              <div class="swarm-connector"></div>
+
+              <div class="swarm-node active" id="node-gmail">
+                <div class="node-badge">A5</div>
+                <div class="node-icon"><i class="fa-solid fa-paper-plane"></i></div>
+                <div class="node-name">Gmail Outreach</div>
+                <div class="node-state">Max 15/Day</div>
+              </div>
+
+              <div class="swarm-connector"></div>
+
+              <div class="swarm-node active" id="node-inbound">
+                <div class="node-badge">A6</div>
+                <div class="node-icon"><i class="fa-solid fa-filter-circle-dollar"></i></div>
+                <div class="node-name">Inbound Sync</div>
+                <div class="node-state">LLM Classifier</div>
+              </div>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; font-size:0.8rem; color:var(--text-muted); margin-top:1.2rem; padding-top:0.8rem; border-top:1px solid var(--border-color);">
+              <span>Queue Status: <strong>14 Tasks in Celery Queue</strong></span>
+              <span>Vector Pre-filter: <strong>Cosine Sim &ge; 0.65 (Saved 78% tokens)</strong></span>
+            </div>
           </div>
+
+          <!-- Right: Live Application Lifecycle Tracker Swimlanes -->
           <div class="glass-panel card-padding">
-            <h3>🚀 Fast Actions</h3>
-            <div class="quick-buttons">
-              <button class="btn-secondary" onclick="navigate('matching')"><i class="fa-solid fa-layer-group"></i> Run Hybrid Match</button>
-              <button class="btn-secondary" onclick="navigate('appagent')"><i class="fa-solid fa-robot"></i> Review Queue</button>
-              <button class="btn-secondary" onclick="navigate('outreach')"><i class="fa-solid fa-paper-plane"></i> Draft Outreach</button>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.2rem;">
+              <h3 style="font-size:1.15rem;"><i class="fa-solid fa-kanban" style="color:#38BDF8;"></i> Live Application Lifecycle Tracker</h3>
+              <span style="font-size:0.85rem; color:var(--text-muted);">Real-Time Sync</span>
+            </div>
+
+            <div class="lifecycle-kanban-board">
+              <!-- Column 1: Matched (92%+) -->
+              <div class="kanban-col">
+                <div class="kanban-header">Matched (92%+) <span class="badge-count">1</span></div>
+                <div class="kanban-cards">
+                  <div class="kanban-item">
+                    <div class="kanban-item-title">AI Systems Engineer</div>
+                    <div class="kanban-item-company">TechScale Labs • $190k</div>
+                    <div class="kanban-tag green">94.2% Match | FULL_AUTO</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Column 2: Applied (Playwright) -->
+              <div class="kanban-col">
+                <div class="kanban-header">Applied (Playwright) <span class="badge-count">2</span></div>
+                <div class="kanban-cards">
+                  <div class="kanban-item">
+                    <div class="kanban-item-title">Staff AI Platform Dev</div>
+                    <div class="kanban-item-company">CloudOps • Lever Portal</div>
+                    <div class="kanban-tag blue">Direct REST Submitted</div>
+                  </div>
+                  <div class="kanban-item">
+                    <div class="kanban-item-title">Machine Learning Eng</div>
+                    <div class="kanban-item-company">Datadog • Greenhouse</div>
+                    <div class="kanban-tag blue">Playwright Bot Filled</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Column 3: Interviewing -->
+              <div class="kanban-col">
+                <div class="kanban-header">Interviewing <span class="badge-count">1</span></div>
+                <div class="kanban-cards">
+                  <div class="kanban-item">
+                    <div class="kanban-item-title">Agent Architect</div>
+                    <div class="kanban-item-company">Startup • Recruiter Screen</div>
+                    <div class="kanban-tag purple">Round 2 Scheduled</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Column 4: Offer / Closed -->
+              <div class="kanban-col">
+                <div class="kanban-header">Offer / Closed <span class="badge-count">1</span></div>
+                <div class="kanban-cards">
+                  <div class="kanban-item">
+                    <div class="kanban-item-title">Senior Full Stack AI</div>
+                    <div class="kanban-item-company">FinTech AI • $185,000</div>
+                    <div class="kanban-tag gold">Offer Letter In Hand</div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
+
+        <!-- Bottom: Real-Time Agent Telemetry & Terminal -->
+        <div class="glass-panel card-padding margin-top">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+            <div style="display:flex; align-items:center; gap:0.8rem;">
+              <span class="pulse-dot"></span>
+              <h3 style="font-size:1.15rem; font-family:'JetBrains Mono', monospace;"><i class="fa-solid fa-terminal" style="color:#34D399;"></i> Real-Time Agent Telemetry & Terminal</h3>
+            </div>
+            <div style="display:flex; gap:0.6rem;">
+              <button class="btn-terminal-action" onclick="clearTelemetryTerminal()"><i class="fa-solid fa-trash-can"></i> Clear</button>
+              <button class="btn-terminal-action" id="terminal-pause-btn" onclick="toggleTelemetryPause()"><i class="fa-solid fa-pause"></i> Pause</button>
+            </div>
+          </div>
+
+          <div id="terminal-stream" class="terminal-window">
+            <div class="terminal-line"><span class="t-time">[22:15:01]</span> <span class="t-tag t-disc">[DISCOVERY]</span> Ingested 28 new roles from Greenhouse & JSearch. Vector similarity pre-filter applied.</div>
+            <div class="terminal-line"><span class="t-time">[22:15:30]</span> <span class="t-tag t-match">[MATCHING]</span> Role 'AI Systems Engineer' at TechScale scored 94.2/100 -> Route: FULL_AUTO</div>
+            <div class="terminal-line"><span class="t-time">[22:16:22]</span> <span class="t-tag t-tailor">[TAILOR]</span> Tailored resume for TechScale Labs (ATS Keyword Compatibility: 96%)</div>
+            <div class="terminal-line"><span class="t-time">[22:17:05]</span> <span class="t-tag t-bot">[BROWSER]</span> Playwright headless Chromium launched with stealth plugin. Navigated to Lever portal</div>
+            <div class="terminal-line"><span class="t-time">[22:17:40]</span> <span class="t-tag t-bot">[BROWSER]</span> Form auto-filled successfully (8 fields mapped). Application submitted!</div>
+            <div class="terminal-line"><span class="t-time">[22:18:20]</span> <span class="t-tag t-outreach">[OUTREACH]</span> Found Hiring Manager email via Apollo.io. Drafted personalized cold pitch in Gmail</div>
+            <div class="terminal-line"><span class="t-time">[22:21:02]</span> <span class="t-tag t-inbound">[INBOUND]</span> Processed inbound email from Recruiter @ Startup: 'Invite to Technical Screen' -> Status updated to INTERVIEWING</div>
+          </div>
+        </div>
       </section>
+
 
       <!-- View 2: Profile Memory -->
       <section id="view-profile" class="view-panel">

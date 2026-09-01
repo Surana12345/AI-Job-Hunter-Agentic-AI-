@@ -438,3 +438,280 @@ input:focus, select:focus, textarea:focus {
   border: 1px solid rgba(16, 185, 129, 0.4);
   color: #6EE7B7;
 }
+
+/* ==========================================================================
+   AUTONOMOUS COMMAND CENTER & SWARM STYLES
+   ========================================================================== */
+
+.command-center-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 1100px) {
+  .command-center-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.9rem;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.active-pill {
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  color: #34D399;
+}
+
+.pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10B981;
+  box-shadow: 0 0 8px #10B981;
+  animation: pulse-glow 2s infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+/* 3D Agent Swarm Visualizer */
+.swarm-visualizer-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  padding: 1.5rem 0.5rem;
+  background: rgba(7, 10, 25, 0.5);
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.swarm-node {
+  flex: 1;
+  min-width: 85px;
+  background: rgba(18, 24, 48, 0.8);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 0.8rem 0.5rem;
+  text-align: center;
+  position: relative;
+  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+
+.swarm-node.active {
+  border-color: rgba(99, 102, 241, 0.45);
+  box-shadow: 0 0 15px rgba(99, 102, 241, 0.15);
+}
+
+.swarm-node:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent-cyan);
+}
+
+.node-badge {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--accent-indigo);
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 0.1rem 0.4rem;
+  border-radius: 10px;
+}
+
+.node-icon {
+  font-size: 1.3rem;
+  color: #818CF8;
+  margin-bottom: 0.3rem;
+}
+
+.node-name {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: white;
+  white-space: nowrap;
+}
+
+.node-state {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  margin-top: 0.2rem;
+}
+
+.swarm-connector {
+  width: 14px;
+  height: 2px;
+  background: linear-gradient(90deg, #6366F1, #06B6D4);
+  opacity: 0.7;
+}
+
+.swarm-core {
+  min-width: 100px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.35) 0%, rgba(18, 24, 48, 0.9) 70%);
+  border: 1px solid rgba(139, 92, 246, 0.6);
+  border-radius: 14px;
+  padding: 1rem 0.6rem;
+  text-align: center;
+  box-shadow: 0 0 25px rgba(99, 102, 241, 0.35);
+  position: relative;
+}
+
+.swarm-core i {
+  font-size: 1.6rem;
+  color: #A78BFA;
+  display: block;
+  margin-bottom: 0.3rem;
+  animation: pulse-glow 3s infinite;
+}
+
+.swarm-core span {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: white;
+}
+
+/* Live Lifecycle Kanban Board */
+.lifecycle-kanban-board {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.8rem;
+  min-height: 220px;
+}
+
+@media (max-width: 768px) {
+  .lifecycle-kanban-board {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.kanban-col {
+  background: rgba(7, 10, 25, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 0.8rem;
+}
+
+.kanban-header {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin-bottom: 0.8rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.badge-count {
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+  padding: 0.1rem 0.4rem;
+  border-radius: 8px;
+  font-size: 0.7rem;
+}
+
+.kanban-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.kanban-item {
+  background: rgba(18, 24, 48, 0.9);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 0.7rem;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.kanban-item:hover {
+  transform: translateY(-2px);
+  border-color: rgba(99, 102, 241, 0.4);
+}
+
+.kanban-item-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 0.2rem;
+}
+
+.kanban-item-company {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.kanban-tag {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+}
+
+.kanban-tag.green { background: rgba(16, 185, 129, 0.15); color: #34D399; }
+.kanban-tag.blue { background: rgba(59, 130, 246, 0.15); color: #60A5FA; }
+.kanban-tag.purple { background: rgba(139, 92, 246, 0.15); color: #C084FC; }
+.kanban-tag.gold { background: rgba(245, 158, 11, 0.15); color: #FBBF24; }
+
+/* Real-Time Agent Telemetry Terminal */
+.terminal-window {
+  background: #05070F;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 1rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+  height: 200px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  color: #E2E8F0;
+  box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.7);
+}
+
+.terminal-line {
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.t-time { color: #64748B; margin-right: 0.5rem; }
+.t-tag { font-weight: 700; margin-right: 0.5rem; }
+.t-disc { color: #38BDF8; }
+.t-match { color: #A78BFA; }
+.t-tailor { color: #F472B6; }
+.t-bot { color: #34D399; }
+.t-outreach { color: #FBBF24; }
+.t-inbound { color: #FB7185; }
+
+.btn-terminal-action {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  padding: 0.35rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-terminal-action:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
+}
+

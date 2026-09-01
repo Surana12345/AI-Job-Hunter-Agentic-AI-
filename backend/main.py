@@ -99,6 +99,7 @@ def create_app() -> FastAPI:
     from backend.jobs.router import router as jobs_router
     from backend.assets.router import router as assets_router
     from backend.tracker.router import router as tracker_router
+    from backend.telemetry.ws import router as telemetry_router
 
     app.include_router(auth_router, prefix="/api/v1")
     app.include_router(profile_router, prefix="/api/v1")
@@ -106,6 +107,8 @@ def create_app() -> FastAPI:
     app.include_router(jobs_router, prefix="/api/v1")
     app.include_router(assets_router, prefix="/api/v1")
     app.include_router(tracker_router, prefix="/api/v1")
+    app.include_router(telemetry_router, prefix="/api/v1")
+
 
     # --- Static Files Mounting (Web Application UI) ---
     import os

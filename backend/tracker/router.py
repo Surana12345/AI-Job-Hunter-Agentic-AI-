@@ -109,3 +109,24 @@ async def delete_track(
 ):
     service = TrackerService(db)
     await service.delete_track(track_id, current_user["sub"])
+
+
+@router.post(
+    "/classify-inbound",
+    summary="Classify inbound email and sync application status",
+)
+async def classify_inbound_email(
+    payload: dict,
+    current_user: dict = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    from backend.tracker.email_classifier import InboundEmailClassifier
+    email_text = payload.get("body", "")
+    subject = payload.get("subject", "")
+    sender = payload.get("sender", "")
+
+    result = await InboundEmailClassifier.classify_email(
+        email_text=email_text, subject=subject, sender=sender
+    )
+    return result
+
